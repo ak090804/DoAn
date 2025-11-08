@@ -1,0 +1,90 @@
+/* ===========================
+   General Styles
+=========================== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+#wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    transition: all 0.3s ease;
+}
+
+/* ===========================
+   Sidebar Styles
+=========================== */
+#sidebar-wrapper {
+    min-width: 250px;
+    max-width: 500px;
+    background-color: #343a40;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+#sidebar-wrapper .sidebar-heading {
+    font-size: 1.5rem;
+    color: #fff;
+    background-color: #212529;
+}
+
+#sidebar-wrapper .list-group-item {
+    background-color: #343a40;
+    color: #fff;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+#sidebar-wrapper .list-group-item:hover {
+    background-color: #495057;
+    color: #fff;
+}
+
+/* ===========================
+   Page Content Styles
+=========================== */
+#page-content-wrapper {
+    flex: 1;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.navbar {
+    padding: 0.5rem 1rem;
+}
+
+footer {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* ===========================
+   Sidebar Toggle
+=========================== */
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: -250px;
+}
+
+#wrapper.toggled #page-content-wrapper {
+    flex: 1 0 100%;
+}
+
+/* ===========================
+   Responsive Styles
+=========================== */
+@media (max-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: -250px;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0;
+    }
+}
+
+#full-content {
+    width: 100%;
+    padding: 0 15px; /* có thể tùy chỉnh padding */
+}
