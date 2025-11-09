@@ -141,8 +141,12 @@ class EmployeeController extends Controller
 				}
 			}
 		} else {
-			// New position is not Thu ngân: if employee had linked user, unlink it (do not delete user)
+			// New position is not Thu ngân: if employee had linked user, delete the user account
 			if ($employee->user_id) {
+				$user = User::find($employee->user_id);
+				if ($user) {
+					$user->delete();
+				}
 				$data['user_id'] = null;
 			}
 			$data['email'] = $request->input('email');

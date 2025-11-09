@@ -120,6 +120,22 @@ class CustomersController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    public function show(Customer $customer)
+    {
+        return view('admin.customers.show', compact('customer'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Customer $customer)
+    {
+        return view('admin.customers.edit', compact('customer'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(Customer $customer)
     {
         // If the customer has a linked user, delete the user first (this will cascade-delete the customer via FK)

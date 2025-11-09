@@ -58,6 +58,7 @@
                     <td>{{ $customer->phone }}</td>
                     <td>{{ $customer->address }}</td>
                     <td>
+                        <a href="{{ route('admin.customers.show', $customer) }}" class="btn btn-info btn-sm">Xem</a>
                         <a href="{{ route('admin.customers.edit', $customer) }}" class="btn btn-warning btn-sm">Sửa</a>
                         <form action="{{ route('admin.customers.destroy', $customer) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
                             @csrf

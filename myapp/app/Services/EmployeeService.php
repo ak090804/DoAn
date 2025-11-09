@@ -44,6 +44,20 @@ class EmployeeService
     // Cập nhật nhân viên
     public function update(Employee $employee, array $data)
     {
+        // Check if position is changing from "Thu ngân" to something else
+        if ($employee->position === 'Thu ngân' && 
+            isset($data['position']) && 
+            $data['position'] !== 'Thu ngân' && 
+            $employee->user_id) {
+            
+            // Delete the associated user account
+            $user = \App\Models\User::find($employee->user_id);
+            if ($user) {
+                $user->delete();
+                $employee->user_id = null; // Clear the user_id reference
+            }
+        }
+
         return $employee->update($data);
     }
 
