@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class CustomersSeeder extends Seeder
 {
@@ -12,26 +14,43 @@ class CustomersSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        // Khách hàng mẫu gắn với user_id đã tồn tại (ví dụ user_id 2 và 3)
-        $customers = [
+        // Create two demo customers with linked user accounts
+        $usersData = [
             [
                 'name' => 'Nguyen Van A',
-                'phone' => '0901234567',
-                'address' => 'Hà Nội',
-                'user_id' => 2, // gắn với user_id từ bảng users
-                'created_at' => now(),
-                'updated_at' => now(),
+                'email' => 'customer1@example.com',
+                'password' => 'customer123',
             ],
             [
                 'name' => 'Tran Thi B',
-                'phone' => '0912345678',
-                'address' => 'TP.HCM',
-                'user_id' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'email' => 'customer2@example.com',
+                'password' => 'customer123',
             ],
         ];
 
-        DB::table('customers')->insert($customers);
+        foreach ($usersData as $u) {
+            // create user only if it doesn't exist
+            $user = User::firstOrCreate(
+                ['email' => $u['email']],
+                [
+                    'name' => $u['name'],
+                    'password' => Hash::make($u['password']),
+                    'role' => 'customer',
+                ]
+            );
+
+            // create customer row only if not already linked
+            $exists = DB::table('customers')->where('user_id', $user->id)->exists();
+            if (! $exists) {
+                DB::table('customers')->insert([
+                    'name' => $u['name'],
+                    'phone' => '090' . rand(1000000, 9999999),
+                    'address' => 'Hà Nội',
+                    'user_id' => $user->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
     }
 }

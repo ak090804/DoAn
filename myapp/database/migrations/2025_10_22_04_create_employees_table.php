@@ -13,13 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customers_id')->constrained('customers')->onDelete('cascade');
-            $table->decimal('total_price', 10, 2);
-            $table->enum('status', ['pending', 'confirmed', 'shipping', 'completed', 'cancelled'])->default('pending');
-            $table->text('note')->nullable();             
-
+            $table->string('name');
+            $table->string('email')->unique()->nullable();
+            $table->string('phone')->nullable();
+            $table->text('address')->nullable();
+            $table->string('position')->nullable();
+            $table->decimal('salary', 10, 2)->nullable();
+            $table->timestamp('hired_at')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('employees');
     }
 };

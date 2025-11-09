@@ -5,30 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Order extends Model
+class ImportNote extends Model
 {
     use HasFactory;
 
+    protected $table = 'import_notes';
+
     protected $fillable = [
-        'customer_id',
         'employee_id',
         'total_price',
         'status',
         'note',
     ];
 
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class, 'customer_id');
-    }
-
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
 
-    public function orderItems()
+    public function items()
     {
-        return $this->hasMany(OrderItems::class, 'order_id');
+        return $this->hasMany(ImportNoteItem::class, 'import_note_id');
     }
 }

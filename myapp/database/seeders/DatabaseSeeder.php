@@ -18,10 +18,13 @@ class DatabaseSeeder extends Seeder
             CategoriesSeeder::class,
             ProductsSeeder::class,
             ProductVariantsSeeder::class,
+            SuppliersSeeder::class,
+            EmployeesSeeder::class,
             UsersSeeder::class,
             CustomersSeeder::class,
             OrdersSeeder::class,
             OrderItemsSeeder::class,
+            ImportNotesSeeder::class,
         ]);
     }
 }

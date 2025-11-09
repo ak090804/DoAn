@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class CustomersController extends Controller
 {
@@ -13,7 +15,7 @@ class CustomersController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Customer::with('users');
+        $query = Customer::with('user');
 
         // simple search by name or phone
         if ($request->filled('q')) {
@@ -26,7 +28,7 @@ class CustomersController extends Controller
 
         $customers = $query->latest()->paginate(15)->appends($request->query());
 
-        return view('ListCustomers', compact('customers'));
+        return view('admin.customers.index', compact('customers'));
     }
 
     /**
@@ -34,8 +36,7 @@ class CustomersController extends Controller
      */
     public function create()
     {
-        $users = User::all();
-        return view('customers.create', compact('users'));
+        return view('admin.customers.create');
     }
 
     /**
@@ -47,12 +48,26 @@ class CustomersController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:50|unique:customers,phone',
             'address' => 'nullable|string|max:500',
-            'user_id' => 'nullable|exists: ,id',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
         ]);
 
-        Customer::create($data);
+        // create linked user with role customer
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role' => 'customer',
+        ]);
 
-        return redirect()->route('customers.index')->with('success', 'Khách hàng đã được tạo.');
+        Customer::create([
+            'name' => $data['name'],
+            'phone' => $data['phone'] ?? null,
+            'address' => $data['address'] ?? null,
+            'user_id' => $user->id,
+        ]);
+
+        return redirect()->route('admin.customers.index')->with('success', 'Khách hàng đã được tạo và liên kết tài khoản.');
     }
 
     /**
@@ -64,12 +79,42 @@ class CustomersController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:50|unique:customers,phone,' . $customer->id,
             'address' => 'nullable|string|max:500',
-            'user_id' => 'nullable|exists:users,id',
+            'email' => 'nullable|email|unique:users,email,' . ($customer->user_id ?? 'NULL'),
+            'password' => 'nullable|string|min:6',
         ]);
 
-        $customer->update($data);
+        // If customer already linked to a user, update that user
+        if ($customer->user_id) {
+            $user = User::find($customer->user_id);
+            if ($user) {
+                $user->name = $data['name'];
+                if (!empty($data['email'])) {
+                    $user->email = $data['email'];
+                }
+                if (!empty($data['password'])) {
+                    $user->password = Hash::make($data['password']);
+                }
+                $user->save();
+            }
+        } else {
+            // If not linked but email+password provided, create user and link
+            if (!empty($data['email']) && !empty($data['password'])) {
+                $user = User::create([
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'password' => Hash::make($data['password']),
+                    'role' => 'customer',
+                ]);
+                $customer->user_id = $user->id;
+            }
+        }
 
-        return redirect()->route('customers.index')->with('success', 'Khách hàng đã được cập nhật.');
+        $customer->name = $data['name'];
+        $customer->phone = $data['phone'] ?? $customer->phone;
+        $customer->address = $data['address'] ?? $customer->address;
+        $customer->save();
+
+        return redirect()->route('admin.customers.index')->with('success', 'Khách hàng đã được cập nhật.');
     }
 
     /**
@@ -77,7 +122,17 @@ class CustomersController extends Controller
      */
     public function destroy(Customer $customer)
     {
+        // If the customer has a linked user, delete the user first (this will cascade-delete the customer via FK)
+        if ($customer->user_id) {
+            $user = User::find($customer->user_id);
+            if ($user) {
+                $user->delete();
+                return redirect()->route('admin.customers.index')->with('success', 'Khách hàng và tài khoản người dùng đã bị xóa.');
+            }
+        }
+
+        // Otherwise just delete the customer
         $customer->delete();
-        return redirect()->route('customers.index')->with('success', 'Khách hàng đã bị xóa.');
+        return redirect()->route('admin.customers.index')->with('success', 'Khách hàng đã bị xóa.');
     }
 }

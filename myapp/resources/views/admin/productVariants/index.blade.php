@@ -43,6 +43,13 @@
                 @endforeach
             </select>
 
+            <select name="supplier_id" class="form-select me-2" onchange="this.form.submit()">
+                <option value="">Tất cả nhà cung cấp</option>
+                @foreach($suppliers as $supplier)
+                    <option value="{{ $supplier->id }}" {{ ($filters['supplier_id'] ?? '') == $supplier->id ? 'selected' : '' }}>{{ $supplier->name }}</option>
+                @endforeach
+            </select>
+
             <select name="sort" class="form-select me-2" onchange="this.form.submit()">
                 <option value="">Sắp xếp</option>
                 <option value="id_asc" {{ ($filters['sort'] ?? '') == 'id_asc' ? 'selected' : '' }}>ID ↑</option>

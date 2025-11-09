@@ -20,12 +20,13 @@ class AdminProductVariantController extends Controller
 
     public function index(Request $request)
     {
-        $filters = $request->only(['search','product_id','brand','category_id','sort']);
+        $filters = $request->only(['search','product_id','brand','category_id','supplier_id','sort']);
         $variants = $this->service->getAllPaginated(10, $filters);
         $products = Product::with('category')->get();
         $categories = Category::all();
+        $suppliers = \App\Models\Supplier::all();
 
-        return view('admin.productVariants.index', compact('variants', 'products', 'categories', 'filters'));
+        return view('admin.productVariants.index', compact('variants', 'products', 'categories', 'filters', 'suppliers'));
     }
 
     public function create()
@@ -39,6 +40,7 @@ class AdminProductVariantController extends Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'brand' => 'required|string|max:255',
+            'supplier_id' => 'nullable|exists:suppliers,id',
             'attribute' => 'required|string|max:50',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
@@ -62,6 +64,7 @@ class AdminProductVariantController extends Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'brand' => 'required|string|max:255',
+            'supplier_id' => 'nullable|exists:suppliers,id',
             'attribute' => 'required|string|max:50',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',

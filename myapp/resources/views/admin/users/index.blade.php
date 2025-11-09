@@ -71,7 +71,7 @@
                     <td>{{ $user->created_at->format('Y-m-d H:i') }}</td>
                     <td>
                         {{-- <a href="{{ route('admin.customers.index', ['user_id' => $user->id]) }}" class="btn btn-success btn-sm">Xem</a> --}}
-                        <a href="#" class="btn btn-success btn-sm">Xem</a>
+                        <a href="{{ route('admin.users.show', $user) }}" class="btn btn-success btn-sm">Xem</a>
                         <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-warning btn-sm">Sửa</a>
                         <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa người dùng này?');">
                             @csrf

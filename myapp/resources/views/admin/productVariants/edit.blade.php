@@ -52,6 +52,17 @@
         </div>
 
         <div class="mb-3">
+            <label for="supplier_id" class="form-label">Nhà cung cấp</label>
+            <select name="supplier_id" id="supplier_id" class="form-select">
+                <option value="">-- Không --</option>
+                @php $suppliers = \App\Models\Supplier::all(); @endphp
+                @foreach($suppliers as $sup)
+                    <option value="{{ $sup->id }}" {{ old('supplier_id', $productVariant->supplier_id) == $sup->id ? 'selected' : '' }}>{{ $sup->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="mb-3">
             <label for="attribute" class="form-label">Attribute</label>
             <input type="text" name="attribute" id="attribute" class="form-control" value="{{ old('attribute', $productVariant->attribute) }}" required>
         </div>

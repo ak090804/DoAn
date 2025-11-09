@@ -58,6 +58,12 @@ class AdminUserController extends Controller
         return view('admin.users.edit', compact('user'));
     }
 
+    // Show user details
+    public function show(User $user)
+    {
+        return view('admin.users.show', compact('user'));
+    }
+
     // Cập nhật thông tin user
     public function update(Request $request, User $user)
     {

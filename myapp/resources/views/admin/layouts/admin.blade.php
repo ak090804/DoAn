@@ -16,14 +16,17 @@
     <!-- Sidebar -->
     <div class="border-end bg-light" id="sidebar-wrapper">
         <div class="sidebar-heading text-center py-4 fw-bold">Admin Panel</div>
-        <div class="list-group list-group-flush">
+            <div class="list-group list-group-flush">
             <a href="#" class="list-group-item list-group-item-action">Dashboard</a>
             <a href="{{ route('admin.categories.index') }}" class="list-group-item list-group-item-action">Categories</a>
             <a href="{{ route('admin.products.index') }}" class="list-group-item list-group-item-action">Products</a>
             <a href="{{ route('admin.productVariants.index') }}" class="list-group-item list-group-item-action">Variants</a>
             <a href="{{ route('admin.users.index') }}" class="list-group-item list-group-item-action">Users</a>
-            <a href="#" class="list-group-item list-group-item-action">Customers</a>
-            <a href="#" class="list-group-item list-group-item-action">Orders</a>            
+                <a href="{{ route('admin.employees.index') }}" class="list-group-item list-group-item-action">Employees</a>
+            <a href="{{ route('admin.customers.index') }}" class="list-group-item list-group-item-action">Customers</a>
+            <a href="{{ route('admin.suppliers.index') }}" class="list-group-item list-group-item-action">Nhà cung cấp</a>
+            <a href="{{ route('admin.orders.index') }}" class="list-group-item list-group-item-action">Orders</a>            
+            <a href="{{ route('admin.import-notes.index') }}" class="list-group-item list-group-item-action">Phiếu nhập</a>
         </div>
     </div>
     <!-- /#sidebar-wrapper -->
@@ -65,6 +68,8 @@
         document.getElementById('wrapper').classList.toggle('toggled');
     });
 </script>
+
+@yield('scripts')
 
 </body>
 </html>

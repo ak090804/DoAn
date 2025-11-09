@@ -11,7 +11,7 @@ class ProductVariantService
     // Lấy danh sách product variant với lọc, search, sort, paginate
     public function getAllPaginated($perPage = 10, $filters = [])
     {
-        $query = ProductVariant::with(['product.category']);
+    $query = ProductVariant::with(['product.category', 'supplier']);
 
         // Tìm kiếm theo brand hoặc tên product
         if (!empty($filters['search'])) {
@@ -25,6 +25,11 @@ class ProductVariantService
         // Lọc theo product_id
         if (!empty($filters['product_id'])) {
             $query->where('product_id', $filters['product_id']);
+        }
+
+        // Lọc theo supplier_id
+        if (!empty($filters['supplier_id'])) {
+            $query->where('supplier_id', $filters['supplier_id']);
         }
 
         // Lọc theo brand
@@ -80,7 +85,8 @@ class ProductVariantService
     private function fillData(ProductVariant $variant, array $data)
     {
         $variant->product_id = $data['product_id'];
-        $variant->brand = $data['brand'];
+        $variant->brand = $data['brand'] ?? null;
+        $variant->supplier_id = $data['supplier_id'] ?? null;
         $variant->attribute = $data['attribute'];
         $variant->description = $data['description'];
         $variant->price = $data['price'];
