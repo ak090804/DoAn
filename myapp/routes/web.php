@@ -17,11 +17,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('employees', EmployeeController::class);
     Route::resource('customers', App\Http\Controllers\Admin\CustomersController::class);
     Route::resource('suppliers', App\Http\Controllers\Admin\AdminSupplierController::class);
-    
+
     // Orders routes
     Route::resource('orders', AdminOrderController::class);
     Route::patch('orders/{order}/update-status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
-    
+
     // Import notes routes
     Route::resource('import-notes', App\Http\Controllers\Admin\AdminImportNoteController::class);
 });
@@ -29,6 +29,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::get('/', function () {
     return view('ecommerce.index');
 });
+
+// Authentication routes (simple session-based auth)
+use App\Http\Controllers\AuthController;
+
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+// Account page
+Route::get('/account', [AuthController::class, 'account'])->name('account');
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 
