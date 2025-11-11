@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Employee;
-use App\Models\Product;
+use App\Models\ProductVariant;
+use App\Models\Supplier;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
 
@@ -26,21 +27,23 @@ class AdminOrderController extends Controller
             'sort' => $request->get('sort'),
             'date_from' => $request->get('date_from'),
             'date_to' => $request->get('date_to'),
+            'supplier_id' => $request->get('supplier_id'),
         ];
 
         $orders = $this->orderService->getAllPaginated(15, $filters);
         $employees = Employee::where('position', 'Thu ngân')->get();
+        $suppliers = Supplier::all();
 
-        return view('admin.orders.index', compact('orders', 'filters', 'employees'));
+        return view('admin.orders.index', compact('orders', 'filters', 'employees', 'suppliers'));
     }
 
     public function create()
     {
         $customers = Customer::all();
         $employees = Employee::where('position', 'Thu ngân')->get();
-        $products = Product::all();
+        $productVariants = ProductVariant::with('product')->get();
 
-        return view('admin.orders.create', compact('customers', 'employees', 'products'));
+        return view('admin.orders.create', compact('customers', 'employees', 'productVariants'));
     }
 
     public function store(Request $request)
@@ -49,7 +52,7 @@ class AdminOrderController extends Controller
             'customer_id' => 'required|exists:customers,id',
             'employee_id' => 'required|exists:employees,id',
             'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.product_variant_id' => 'required|exists:product_variants,id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price' => 'required|numeric|min:0',
             'status' => 'nullable|in:pending,confirmed,shipping,completed,cancelled',
@@ -74,9 +77,9 @@ class AdminOrderController extends Controller
         $order = $this->orderService->find($id);
         $customers = Customer::all();
         $employees = Employee::where('position', 'Thu ngân')->get();
-        $products = Product::all();
+        $productVariants = ProductVariant::with('product')->get();
 
-        return view('admin.orders.create', compact('order', 'customers', 'employees', 'products'));
+        return view('admin.orders.create', compact('order', 'customers', 'employees', 'productVariants'));
     }
 
     public function update(Request $request, $id)
@@ -85,7 +88,7 @@ class AdminOrderController extends Controller
             'employee_id' => 'required|exists:employees,id',
             'status' => 'required|in:pending,confirmed,shipping,completed,cancelled',
             'items' => 'sometimes|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.product_variant_id' => 'required|exists:product_variants,id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price' => 'required|numeric|min:0',
             'note' => 'nullable|string',

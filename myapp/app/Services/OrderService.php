@@ -10,7 +10,7 @@ class OrderService
 {
     public function getAllPaginated($perPage = 15, $filters = [])
     {
-        $query = Order::with(['customer', 'employee', 'orderItems.product']);
+        $query = Order::with(['customer', 'employee', 'orderItems.productVariant']);
 
         // Apply filters
         if (isset($filters['search'])) {
@@ -24,7 +24,7 @@ class OrderService
             });
         }
 
-        if (isset($filters['status'])) {
+        if (isset($filters['status']) && !empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
@@ -34,6 +34,14 @@ class OrderService
 
         if (isset($filters['date_to'])) {
             $query->whereDate('created_at', '<=', $filters['date_to']);
+        }
+
+        // Filter by supplier - check if any order item has a product variant from this supplier
+        if (isset($filters['supplier_id']) && !empty($filters['supplier_id'])) {
+            $supplierId = $filters['supplier_id'];
+            $query->whereHas('orderItems.productVariant', function($q) use ($supplierId) {
+                $q->where('supplier_id', $supplierId);
+            });
         }
 
         // Apply sorting
@@ -61,7 +69,7 @@ class OrderService
 
     public function find($id)
     {
-        return Order::with(['customer', 'employee', 'orderItems.product'])->findOrFail($id);
+        return Order::with(['customer', 'employee', 'orderItems.productVariant'])->findOrFail($id);
     }
 
     public function create(array $data)
@@ -86,7 +94,7 @@ class OrderService
 
                 OrderItems::create([
                     'order_id' => $order->id,
-                    'product_id' => $item['product_id'],
+                    'product_variant_id' => $item['product_variant_id'],
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
                     'subtotal' => $subtotal,
@@ -132,7 +140,7 @@ class OrderService
 
                     OrderItems::create([
                         'order_id' => $order->id,
-                        'product_id' => $item['product_id'],
+                        'product_variant_id' => $item['product_variant_id'],
                         'quantity' => $item['quantity'],
                         'price' => $item['price'],
                         'subtotal' => $subtotal,

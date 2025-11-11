@@ -30,7 +30,7 @@
     <!-- Filters -->
     <div class="mb-3">
         <form action="{{ route('admin.orders.index') }}" method="GET" class="row g-3">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <input type="text" name="search" class="form-control" placeholder="Tìm theo tên khách hàng" 
                     value="{{ $filters['search'] ?? '' }}">
             </div>
@@ -45,6 +45,16 @@
                 </select>
             </div>
             <div class="col-md-2">
+                <select name="supplier_id" class="form-select">
+                    <option value="">Nhà cung cấp</option>
+                    @foreach($suppliers as $supplier)
+                        <option value="{{ $supplier->id }}" {{ ($filters['supplier_id'] ?? '') == $supplier->id ? 'selected' : '' }}>
+                            {{ $supplier->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
                 <input type="date" name="date_from" class="form-control" placeholder="Từ ngày"
                     value="{{ $filters['date_from'] ?? '' }}">
             </div>
@@ -52,13 +62,13 @@
                 <input type="date" name="date_to" class="form-control" placeholder="Đến ngày"
                     value="{{ $filters['date_to'] ?? '' }}">
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <select name="sort" class="form-select">
                     <option value="">Sắp xếp</option>
                     <option value="date_desc" {{ ($filters['sort'] ?? '') == 'date_desc' ? 'selected' : '' }}>Mới nhất</option>
                     <option value="date_asc" {{ ($filters['sort'] ?? '') == 'date_asc' ? 'selected' : '' }}>Cũ nhất</option>
-                    <option value="total_desc" {{ ($filters['sort'] ?? '') == 'total_desc' ? 'selected' : '' }}>Tổng tiền giảm dần</option>
-                    <option value="total_asc" {{ ($filters['sort'] ?? '') == 'total_asc' ? 'selected' : '' }}>Tổng tiền tăng dần</option>
+                    <option value="total_desc" {{ ($filters['sort'] ?? '') == 'total_desc' ? 'selected' : '' }}>Tổng tiền ↓</option>
+                    <option value="total_asc" {{ ($filters['sort'] ?? '') == 'total_asc' ? 'selected' : '' }}>Tổng tiền ↑</option>
                 </select>
             </div>
             <div class="col-md-1">

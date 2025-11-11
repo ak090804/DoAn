@@ -9,12 +9,12 @@ class OrderItemsSeeder extends Seeder
 {
     public function run()
     {
-        // Các item của đơn hàng (tham chiếu đến order_id và product_id thực tế)
+        // Các item của đơn hàng (tham chiếu đến order_id và product_variant_id thực tế)
         $orderItems = [
             // Đơn hàng 1 (customers_id = 1)
             [
                 'order_id' => 1,
-                'product_id' => 1, // Gạo Jasmine
+                'product_variant_id' => 1, // Gạo Hà Nội Rice 5kg
                 'quantity' => 2,
                 'price' => 50000,
                 'subtotal' => 2 * 50000,
@@ -23,7 +23,7 @@ class OrderItemsSeeder extends Seeder
             ],
             [
                 'order_id' => 1,
-                'product_id' => 2, // Rau xanh
+                'product_variant_id' => 3, // Rau EcoFarm 500g
                 'quantity' => 3,
                 'price' => 15000,
                 'subtotal' => 3 * 15000,
@@ -33,7 +33,7 @@ class OrderItemsSeeder extends Seeder
             // Đơn hàng 2 (customers_id = 2)
             [
                 'order_id' => 2,
-                'product_id' => 3, // Nước ép trái cây
+                'product_variant_id' => 5, // Nước ép Tropicana 330ml
                 'quantity' => 5,
                 'price' => 20000,
                 'subtotal' => 5 * 20000,
@@ -42,7 +42,7 @@ class OrderItemsSeeder extends Seeder
             ],
             [
                 'order_id' => 2,
-                'product_id' => 4, // Trà xanh
+                'product_variant_id' => 7, // Trà xanh Lipton 20 túi
                 'quantity' => 2,
                 'price' => 12000,
                 'subtotal' => 2 * 12000,

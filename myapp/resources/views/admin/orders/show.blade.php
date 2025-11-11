@@ -72,7 +72,7 @@
                     <tbody>
                         @foreach($order->orderItems as $item)
                             <tr>
-                                <td>{{ $item->product->name }}</td>
+                                <td>{{ $item->productVariant->product->name }} - {{ $item->productVariant->attribute }}</td>
                                 <td>{{ number_format($item->price, 0, ',', '.') }}đ</td>
                                 <td>{{ $item->quantity }}</td>
                                 <td>{{ number_format($item->subtotal, 0, ',', '.') }}đ</td>

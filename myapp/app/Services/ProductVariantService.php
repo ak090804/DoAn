@@ -33,6 +33,11 @@ class ProductVariantService
             $query->where('product_id', $filters['product_id']);
         }
 
+        // Lọc theo nhà cung cấp (supplier_id)
+        if (!empty($filters['supplier_id'])) {
+            $query->where('supplier_id', $filters['supplier_id']);
+        }
+
         // Sắp xếp theo yêu cầu
         switch ($filters['sort'] ?? null) {
             case 'price_asc': $query->orderBy('price', 'asc'); break;
