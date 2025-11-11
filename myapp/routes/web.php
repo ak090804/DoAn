@@ -1,15 +1,19 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminProductVariantController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Client\ClientHomeController;
+use App\Http\Controllers\Client\ClientProductController;
 
 
 Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::resource('categories', AdminCategoryController::class);
     Route::resource('products', AdminProductController::class);
     Route::resource('productVariants', AdminProductVariantController::class);
@@ -41,8 +45,14 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.po
 
 // Account page
 Route::get('/account', [AuthController::class, 'account'])->name('account');
-
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+
+// Client-side routes
+Route::get('/', [ClientHomeController::class, 'home'])->name('client.home');
+Route::get('/products', [ClientProductController::class, 'products'])->name('client.products');
+Route::get('/product/{id}', [ClientProductController::class, 'show'])->name('client.productDetail');
+
 
 
 
