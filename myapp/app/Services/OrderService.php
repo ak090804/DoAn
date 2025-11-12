@@ -15,10 +15,10 @@ class OrderService
         // Apply filters
         if (isset($filters['search'])) {
             $search = $filters['search'];
-            $query->where(function($q) use ($search) {
-                $q->whereHas('customer', function($sq) use ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('customer', function ($sq) use ($search) {
                     $sq->where('name', 'like', "%{$search}%");
-                })->orWhereHas('employee', function($sq) use ($search) {
+                })->orWhereHas('employee', function ($sq) use ($search) {
                     $sq->where('name', 'like', "%{$search}%");
                 });
             });
@@ -39,7 +39,7 @@ class OrderService
         // Filter by supplier - check if any order item has a product variant from this supplier
         if (isset($filters['supplier_id']) && !empty($filters['supplier_id'])) {
             $supplierId = $filters['supplier_id'];
-            $query->whereHas('orderItems.productVariant', function($q) use ($supplierId) {
+            $query->whereHas('orderItems.productVariant', function ($q) use ($supplierId) {
                 $q->where('supplier_id', $supplierId);
             });
         }
@@ -169,6 +169,20 @@ class OrderService
     public function updateStatus($id, $status)
     {
         $order = Order::findOrFail($id);
-        return $order->update(['status' => $status]);
+        $data = ['status' => $status];
+
+        // If status is completed, record confirmed_by/confirmed_at when appropriate
+        if ($status === 'completed') {
+            $data['confirmed_by'] = auth()->id() ?? session()->get('user_id');
+            $data['confirmed_at'] = now();
+        }
+
+        // If status is cancelled, record cancelled_by/cancelled_at when appropriate
+        if ($status === 'cancelled') {
+            $data['cancelled_by'] = auth()->id() ?? session()->get('user_id');
+            $data['cancelled_at'] = now();
+        }
+
+        return $order->update($data);
     }
 }

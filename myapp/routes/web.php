@@ -75,6 +75,12 @@ Route::get('/checkout', [CheckoutController::class, 'show'])->name('client.check
 Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('client.checkout.store');
 Route::get('/checkout/confirm/{order}', [CheckoutController::class, 'confirm'])->name('client.orderConfirm');
 
+// Client orders (history)
+use App\Http\Controllers\Client\ClientOrderController;
+Route::get('/account/orders', [ClientOrderController::class, 'index'])->name('client.orders.index');
+Route::get('/account/orders/{id}', [ClientOrderController::class, 'show'])->name('client.orders.show');
+Route::post('/account/orders/{id}/update-status', [ClientOrderController::class, 'updateStatus'])->name('client.orders.updateStatus');
+
 
 
 
