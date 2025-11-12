@@ -53,6 +53,22 @@ Route::get('/', [ClientHomeController::class, 'home'])->name('client.home');
 Route::get('/products', [ClientProductController::class, 'products'])->name('client.products');
 Route::get('/product/{id}', [ClientProductController::class, 'show'])->name('client.productDetail');
 
+// Cart routes
+use App\Http\Controllers\Client\CartController;
+use App\Http\Controllers\Client\CheckoutController;
+Route::get('/cart', [CartController::class, 'viewCart'])->name('client.cart');
+Route::post('/api/cart/add', [CartController::class, 'addToCart'])->name('api.cart.add');
+Route::post('/api/cart/update', [CartController::class, 'updateQuantity'])->name('api.cart.update');
+Route::post('/api/cart/remove', [CartController::class, 'removeFromCart'])->name('api.cart.remove');
+Route::get('/api/cart/data', [CartController::class, 'getCartData'])->name('api.cart.data');
+Route::post('/api/cart/clear', [CartController::class, 'clearCart'])->name('api.cart.clear');
+Route::get('/api/cart/check-login', [CartController::class, 'checkLogin'])->name('api.cart.checkLogin');
+
+// Checkout routes
+Route::get('/checkout', [CheckoutController::class, 'show'])->name('client.checkout');
+Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('client.checkout.store');
+Route::get('/checkout/confirm/{order}', [CheckoutController::class, 'confirm'])->name('client.orderConfirm');
+
 
 
 

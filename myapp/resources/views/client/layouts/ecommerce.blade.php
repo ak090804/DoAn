@@ -10,6 +10,7 @@
   {{-- CSS --}}
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="{{ asset('css/vendor.css') }}">
   <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
   <link rel="stylesheet" href="{{ asset('style.css') }}">
@@ -19,6 +20,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:wght@400;700&display=swap"
     rel="stylesheet">
+
+  {{-- CSRF Token --}}
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body>
@@ -177,8 +181,7 @@
               @endif
             </li>
             <li class="d-lg-none">
-              <a href="#" class="rounded-circle bg-light p-2 mx-1" data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
+              <a href="{{ route('client.cart') }}" class="rounded-circle bg-light p-2 mx-1" title="Giỏ hàng">
                 <svg width="24" height="24" viewBox="0 0 24 24">
                   <use xlink:href="#cart"></use>
                 </svg>
@@ -195,13 +198,18 @@
           </ul>
 
           <div class="cart text-end d-none d-lg-block dropdown">
-            <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1" type="button"
-              data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
-              <svg width="24" height="24" viewBox="0 0 24 24">
-                <use xlink:href="#cart"></use>
-              </svg>
-              <span class="cart-total fs-5 fw-bold">$1290.00</span>
-            </button>
+            <a href="{{ route('client.cart') }}"
+              class="border-0 bg-transparent d-flex flex-column gap-2 lh-1 text-decoration-none"
+              style="color: inherit;">
+              <div class="position-relative">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <use xlink:href="#cart"></use>
+                </svg>
+                <span class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                  style="display: none; font-size: 10px;">0</span>
+              </div>
+              <span class="cart-total fs-5 fw-bold">₫0</span>
+            </a>
           </div>
         </div>
       </div>
@@ -364,7 +372,8 @@
     <script src="{{ asset('js/modernizr.js') }}"></script>
     <script src="{{ asset('js/plugins.js') }}"></script>
     <script src="{{ asset('js/script.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
 
 </body>
 
