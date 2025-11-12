@@ -34,8 +34,17 @@
                 value="{{ request('q') }}">
         </form>
 
-
-        <a href="{{ route('admin.customers.create') }}" class="btn btn-success">Thêm khách hàng</a>
+        @php
+            $adminUserId = session('admin_user_id');
+            $role = 'admin';
+            if ($adminUserId) {
+                $adminUser = \App\Models\User::find($adminUserId);
+                $role = $adminUser->role ?? 'admin';
+            }
+        @endphp
+        @if($role === 'admin')
+            <a href="{{ route('admin.customers.create') }}" class="btn btn-success">Thêm khách hàng</a>
+        @endif
     </div>
 
     <table class="table table-bordered">
@@ -59,12 +68,14 @@
                     <td>{{ $customer->address }}</td>
                     <td>
                         <a href="{{ route('admin.customers.show', $customer) }}" class="btn btn-info btn-sm">Xem</a>
-                        <a href="{{ route('admin.customers.edit', $customer) }}" class="btn btn-warning btn-sm">Sửa</a>
-                        <form action="{{ route('admin.customers.destroy', $customer) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger btn-sm">Xóa</button>
-                        </form>
+                        @if($role === 'admin')
+                            <a href="{{ route('admin.customers.edit', $customer) }}" class="btn btn-warning btn-sm">Sửa</a>
+                            <form action="{{ route('admin.customers.destroy', $customer) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger btn-sm">Xóa</button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
             @empty

@@ -47,7 +47,17 @@
             </select>
         </form>
 
-        <a href="{{ route('admin.products.create') }}" class="btn btn-success">Thêm sản phẩm</a>
+        @php
+            $adminUserId = session('admin_user_id');
+            $role = 'admin';
+            if ($adminUserId) {
+                $adminUser = \App\Models\User::find($adminUserId);
+                $role = $adminUser->role ?? 'admin';
+            }
+        @endphp
+        @if($role === 'admin')
+            <a href="{{ route('admin.products.create') }}" class="btn btn-success">Thêm sản phẩm</a>
+        @endif
     </div>
 
     <table class="table table-bordered">
@@ -69,12 +79,14 @@
                     <td>{{ $product->productVariants->count() }}</td>
                     <td>
                         <a href="{{ route('admin.productVariants.index', ['product_id' => $product->id]) }}" class="btn btn-success btn-sm">Xem</a>
-                        <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-warning btn-sm">Sửa</a>
-                        <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger btn-sm">Xóa</button>
-                        </form>
+                        @if($role === 'admin')
+                            <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-warning btn-sm">Sửa</a>
+                            <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger btn-sm">Xóa</button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
             @empty

@@ -49,11 +49,11 @@
 
         <div id="cashier-fields" style="display: none;">
             <div class="mb-3">
-                <label class="form-label">Email {{ $employee->user_id ? '(tài khoản liên kết)' : '(bắt buộc nếu chưa có tài khoản)' }}</label>
+                <label class="form-label">Email {{ $employee->user_id ? '(tài khoản liên kết)' : '(bắt buộc nếu chưa có tài khoản)' }} (Thu ngân / Kiểm kho)</label>
                 <input type="email" id="cashier-email" name="email" class="form-control" value="{{ old('email', $employee->email) }}">
             </div>
             <div class="mb-3">
-                <label class="form-label">Password {{ $employee->user_id ? '(để đổi mật khẩu, để trống nếu không đổi)' : '(bắt buộc nếu chưa có tài khoản)' }}</label>
+                <label class="form-label">Password {{ $employee->user_id ? '(để đổi mật khẩu, để trống nếu không đổi)' : '(bắt buộc nếu chưa có tài khoản)' }} (Thu ngân / Kiểm kho)</label>
                 <input type="password" id="cashier-password" name="password" class="form-control">
             </div>
         </div>
@@ -90,7 +90,7 @@
         const password = document.getElementById('cashier-password');
 
         function toggle() {
-            if (select.value === 'Thu ngân') {
+            if (select.value === 'Thu ngân' || select.value === 'Kiểm kho') {
                 cashierFields.style.display = '';
                 // If employee already has linked user, email is optional and password optional
                 @if(!$employee->user_id)

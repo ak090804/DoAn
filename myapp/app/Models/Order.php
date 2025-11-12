@@ -31,4 +31,18 @@ class Order extends Model
     {
         return $this->hasMany(OrderItems::class, 'order_id');
     }
+
+    // Trả về nhãn trạng thái bằng tiếng Việt để hiển thị trong view
+    public function getStatusLabelAttribute()
+    {
+        $map = [
+            'pending' => 'Chờ xử lý',
+            'confirmed' => 'Đã xác nhận',
+            'shipping' => 'Đang giao',
+            'completed' => 'Hoàn thành',
+            'cancelled' => 'Đã hủy',
+        ];
+
+        return $map[$this->status] ?? $this->status;
+    }
 }

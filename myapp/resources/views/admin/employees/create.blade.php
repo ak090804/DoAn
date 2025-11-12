@@ -48,11 +48,11 @@
 
         <div id="cashier-fields" style="display: none;">
             <div class="mb-3">
-                <label class="form-label">Email (bắt buộc cho Thu ngân)</label>
+                <label class="form-label">Email (bắt buộc cho Thu ngân hoặc Kiểm kho)</label>
                 <input type="email" id="cashier-email" name="email" class="form-control" value="{{ old('email') }}">
             </div>
             <div class="mb-3">
-                <label class="form-label">Password (bắt buộc cho Thu ngân)</label>
+                <label class="form-label">Password (bắt buộc cho Thu ngân hoặc Kiểm kho)</label>
                 <input type="password" id="cashier-password" name="password" class="form-control">
             </div>
         </div>
@@ -89,7 +89,7 @@
         const password = document.getElementById('cashier-password');
 
         function toggle() {
-            if (select.value === 'Thu ngân') {
+            if (select.value === 'Thu ngân' || select.value === 'Kiểm kho') {
                 cashierFields.style.display = '';
                 email.setAttribute('required', 'required');
                 password.setAttribute('required', 'required');

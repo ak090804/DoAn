@@ -40,4 +40,25 @@ class Employee extends Model
 	{
 		return $this->belongsTo(User::class);
 	}
+
+	protected static function booted()
+	{
+		static::deleting(function (Employee $employee) {
+			if (User::$deletingFromRelation) {
+				return;
+			}
+
+			User::$deletingFromRelation = true;
+			try {
+				if ($employee->user_id) {
+					$user = User::find($employee->user_id);
+					if ($user) {
+						$user->delete();
+					}
+				}
+			} finally {
+				User::$deletingFromRelation = false;
+			}
+		});
+	}
 }

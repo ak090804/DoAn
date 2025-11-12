@@ -62,8 +62,17 @@
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
 
-
-        <a href="{{ route('admin.productVariants.create') }}" class="btn btn-success">Thêm biến thể</a>
+        @php
+            $adminUserId = session('admin_user_id');
+            $role = 'admin';
+            if ($adminUserId) {
+                $adminUser = \App\Models\User::find($adminUserId);
+                $role = $adminUser->role ?? 'admin';
+            }
+        @endphp
+        @if($role === 'admin')
+            <a href="{{ route('admin.productVariants.create') }}" class="btn btn-success">Thêm biến thể</a>
+        @endif
     </div>
 
     <table class="table table-bordered table-striped">
@@ -96,12 +105,14 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('admin.productVariants.edit', $variant) }}" class="btn btn-warning btn-sm">Sửa</a>
-                        <form action="{{ route('admin.productVariants.destroy', $variant) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger btn-sm">Xóa</button>
-                        </form>
+                        @if($role === 'admin')
+                            <a href="{{ route('admin.productVariants.edit', $variant) }}" class="btn btn-warning btn-sm">Sửa</a>
+                            <form action="{{ route('admin.productVariants.destroy', $variant) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger btn-sm">Xóa</button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
             @empty

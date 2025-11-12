@@ -41,24 +41,26 @@ class EmployeeController extends Controller
 			'phone' => 'nullable|string|max:50',
 			'address' => 'nullable|string|max:500',
 			'position' => 'required|in:Thu ngân,Tiếp thị,Kiểm kho',
-			'salary' => 'nullable|numeric|min:0',
+			// salary must fit into decimal(10,2) column (max 99,999,999.99)
+			'salary' => 'nullable|numeric|min:0|max:99999999.99',
 			'hired_at' => 'nullable|date',
 		]);
 
 		$data = $request->only(['name','phone','address','position','salary','hired_at']);
 
-		// If Thu ngân, require email and password and create linked user
-		if ($request->input('position') === 'Thu ngân') {
+		// If Thu ngân or Kiểm kho, require email and password and create linked user
+		if (in_array($request->input('position'), ['Thu ngân', 'Kiểm kho'])) {
 			$request->validate([
 				'email' => 'required|email|unique:users,email',
 				'password' => 'required|string|min:6',
 			]);
 
+			$role = $request->input('position') === 'Kiểm kho' ? 'inventory' : 'staff';
 			$user = User::create([
 				'name' => $request->input('name'),
 				'email' => $request->input('email'),
 				'password' => Hash::make($request->input('password')),
-				'role' => 'staff',
+				'role' => $role,
 			]);
 
 			$data['user_id'] = $user->id;
@@ -93,7 +95,7 @@ class EmployeeController extends Controller
 			'phone' => 'nullable|string|max:50',
 			'address' => 'nullable|string|max:500',
 			'position' => 'required|in:Thu ngân,Tiếp thị,Kiểm kho',
-			'salary' => 'nullable|numeric|min:0',
+			'salary' => 'nullable|numeric|min:0|max:99999999.99',
 			'hired_at' => 'nullable|date',
 		]);
 
@@ -101,8 +103,8 @@ class EmployeeController extends Controller
 
 		$newPosition = $request->input('position');
 
-		// If new position is Thu ngân
-		if ($newPosition === 'Thu ngân') {
+		// If new position is Thu ngân or Kiểm kho
+		if (in_array($newPosition, ['Thu ngân', 'Kiểm kho'])) {
 			// If employee has no linked user, require email and password to create
 			if (!$employee->user_id) {
 				$request->validate([
@@ -110,11 +112,12 @@ class EmployeeController extends Controller
 					'password' => 'required|string|min:6',
 				]);
 
+				$role = $request->input('position') === 'Kiểm kho' ? 'inventory' : 'staff';
 				$user = User::create([
 					'name' => $request->input('name'),
 					'email' => $request->input('email'),
 					'password' => Hash::make($request->input('password')),
-					'role' => 'staff',
+					'role' => $role,
 				]);
 
 				$data['user_id'] = $user->id;
@@ -141,7 +144,7 @@ class EmployeeController extends Controller
 				}
 			}
 		} else {
-			// New position is not Thu ngân: if employee had linked user, delete the user account
+			// New position is not Thu ngân/Kiểm kho: if employee had linked user, delete the user account
 			if ($employee->user_id) {
 				$user = User::find($employee->user_id);
 				if ($user) {

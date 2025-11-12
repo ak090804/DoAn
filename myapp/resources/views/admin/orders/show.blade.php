@@ -38,12 +38,12 @@
                 </div>
                 <div class="col-md-6">
                     <p><strong>Ngày tạo:</strong> {{ $order->created_at->format('d/m/Y H:i') }}</p>
-                    <p><strong>Trạng thái:</strong> 
+                        <p><strong>Trạng thái:</strong> 
                         <span class="badge bg-{{ $order->status == 'completed' ? 'success' : 
                             ($order->status == 'cancelled' ? 'danger' : 
                             ($order->status == 'shipping' ? 'info' : 
                             ($order->status == 'confirmed' ? 'primary' : 'warning'))) }}">
-                            {{ $order->status }}
+                            {{ $order->status_label }}
                         </span>
                     </p>
                     <p><strong>Ghi chú:</strong> {{ $order->note ?? 'Không có' }}</p>

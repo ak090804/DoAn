@@ -10,9 +10,15 @@ use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Client\ClientHomeController;
 use App\Http\Controllers\Client\ClientProductController;
+use App\Http\Controllers\AuthController as MainAuthController;
 
 
-Route::prefix('admin')->name('admin.')->group(function () {
+// Admin-specific login routes (separate from client login)
+Route::get('/admin/login', [MainAuthController::class, 'showAdminLogin'])->name('admin.login');
+Route::post('/admin/login', [MainAuthController::class, 'adminLogin'])->name('admin.login.post');
+Route::post('/admin/logout', [MainAuthController::class, 'adminLogout'])->name('admin.logout');
+
+Route::prefix('admin')->name('admin.')->middleware('admin.role')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::resource('categories', AdminCategoryController::class);
     Route::resource('products', AdminProductController::class);

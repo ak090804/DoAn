@@ -22,7 +22,17 @@
     </div>
 
     <div class="mb-3 d-flex justify-content-between">
-        <a href="{{ route('admin.categories.create') }}" class="btn btn-success">Thêm danh mục</a>
+        @php
+            $adminUserId = session('admin_user_id');
+            $role = 'admin';
+            if ($adminUserId) {
+                $adminUser = \App\Models\User::find($adminUserId);
+                $role = $adminUser->role ?? 'admin';
+            }
+        @endphp
+        @if($role === 'admin')
+            <a href="{{ route('admin.categories.create') }}" class="btn btn-success">Thêm danh mục</a>
+        @endif
     </div>
     
     <table class="table table-bordered">
@@ -40,12 +50,14 @@
                     <td>{{ $category->name }}</td>
                     <td>
                         <a href="{{ route('admin.products.index', ['category_id' => $category->id]) }}" class="btn btn-success btn-sm">Xem</a>
-                        <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-warning btn-sm">Sửa</a>
-                        <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger btn-sm">Xóa</button>
-                        </form>
+                        @if($role === 'admin')
+                            <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-warning btn-sm">Sửa</a>
+                            <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger btn-sm">Xóa</button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
             @empty

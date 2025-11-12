@@ -52,5 +52,17 @@ class OrderItemsSeeder extends Seeder
         ];
 
         DB::table('order_items')->insert($orderItems);
+
+        // Sau khi insert các order_items, cập nhật tổng giá trị đơn hàng (total_price) theo từng order
+        $orderIds = collect($orderItems)->pluck('order_id')->unique();
+        foreach ($orderIds as $orderId) {
+            $total = DB::table('order_items')
+                ->where('order_id', $orderId)
+                ->sum('subtotal');
+
+            DB::table('orders')
+                ->where('id', $orderId)
+                ->update(['total_price' => $total, 'updated_at' => now()]);
+        }
     }
 }

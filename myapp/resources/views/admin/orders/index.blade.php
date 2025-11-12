@@ -106,7 +106,7 @@
                                 ($order->status == 'cancelled' ? 'danger' : 
                                 ($order->status == 'shipping' ? 'info' : 
                                 ($order->status == 'confirmed' ? 'primary' : 'warning'))) }}">
-                                {{ $order->status }}
+                                {{ $order->status_label }}
                             </span>
                         </td>
                         <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>

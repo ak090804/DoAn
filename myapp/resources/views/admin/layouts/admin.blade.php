@@ -18,15 +18,38 @@
         <div class="sidebar-heading text-center py-4 fw-bold">Admin Panel</div>
             <div class="list-group list-group-flush">
             <a href="#" class="list-group-item list-group-item-action">Dashboard</a>
-            <a href="{{ route('admin.categories.index') }}" class="list-group-item list-group-item-action">Categories</a>
-            <a href="{{ route('admin.products.index') }}" class="list-group-item list-group-item-action">Products</a>
-            <a href="{{ route('admin.productVariants.index') }}" class="list-group-item list-group-item-action">Variants</a>
-            <a href="{{ route('admin.users.index') }}" class="list-group-item list-group-item-action">Users</a>
+            @php
+                $adminUserId = session('admin_user_id');
+                if ($adminUserId) {
+                    $adminUser = \App\Models\User::find($adminUserId);
+                    $role = $adminUser->role ?? 'admin';
+                    $adminName = $adminUser->name ?? 'Admin';
+                } else {
+                    $role = auth()->user()->role ?? 'admin';
+                    $adminName = auth()->user()->name ?? 'Admin';
+                }
+            @endphp
+
+            @if(in_array($role, ['admin','staff','inventory']))
+                <a href="{{ route('admin.categories.index') }}" class="list-group-item list-group-item-action">Categories</a>
+                <a href="{{ route('admin.products.index') }}" class="list-group-item list-group-item-action">Products</a>
+                <a href="{{ route('admin.productVariants.index') }}" class="list-group-item list-group-item-action">Variants</a>
+                <a href="{{ route('admin.customers.index') }}" class="list-group-item list-group-item-action">Customers</a>
+            @endif
+
+            @if($role === 'admin')
+                <a href="{{ route('admin.users.index') }}" class="list-group-item list-group-item-action">Users</a>
                 <a href="{{ route('admin.employees.index') }}" class="list-group-item list-group-item-action">Employees</a>
-            <a href="{{ route('admin.customers.index') }}" class="list-group-item list-group-item-action">Customers</a>
-            <a href="{{ route('admin.suppliers.index') }}" class="list-group-item list-group-item-action">Nhà cung cấp</a>
-            <a href="{{ route('admin.orders.index') }}" class="list-group-item list-group-item-action">Orders</a>            
-            <a href="{{ route('admin.import-notes.index') }}" class="list-group-item list-group-item-action">Phiếu nhập</a>
+                <a href="{{ route('admin.suppliers.index') }}" class="list-group-item list-group-item-action">Nhà cung cấp</a>
+                <a href="{{ route('admin.orders.index') }}" class="list-group-item list-group-item-action">Orders</a>
+                <a href="{{ route('admin.import-notes.index') }}" class="list-group-item list-group-item-action">Phiếu nhập</a>
+            @elseif($role === 'staff')
+                {{-- staff (thu ngân): can view Orders but no create/edit/delete --}}
+                <a href="{{ route('admin.orders.index') }}" class="list-group-item list-group-item-action">Orders</a>
+            @elseif($role === 'inventory')
+                {{-- inventory (kiểm kho): can view Import Notes but no create/edit/delete --}}
+                <a href="{{ route('admin.import-notes.index') }}" class="list-group-item list-group-item-action">Phiếu nhập</a>
+            @endif
         </div>
     </div>
     <!-- /#sidebar-wrapper -->
@@ -38,7 +61,13 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
             <div class="container-fluid">
                 <button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button>
-                <span class="ms-auto">Xin chào, {{ auth()->user()->name ?? 'Admin' }}</span>
+                <div class="ms-auto d-flex align-items-center gap-3">
+                    <span>Xin chào, {{ $adminName ?? (auth()->user()->name ?? 'Admin') }}</span>
+                    <form action="{{ route('admin.logout') }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
+                    </form>
+                </div>
             </div>
         </nav>
 
