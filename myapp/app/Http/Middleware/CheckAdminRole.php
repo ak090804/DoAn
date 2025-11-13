@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CheckAdminRole
 {
@@ -22,10 +23,22 @@ class CheckAdminRole
         }
 
         if (!$user) {
+            // Log reason for redirect so we can debug unexpected logouts
+            Log::warning('CheckAdminRole: no admin user found for request', [
+                'path' => $request->path(),
+                'session_admin_user_id' => $request->session()->get('admin_user_id'),
+                'auth_user_id' => optional(auth()->user())->id,
+            ]);
             return redirect()->route('admin.login');
         }
 
         if (!in_array($user->role, ['admin', 'staff', 'inventory'])) {
+            // Log unauthorized role attempts
+            Log::warning('CheckAdminRole: user has unauthorized role', [
+                'path' => $request->path(),
+                'user_id' => $user->id ?? null,
+                'role' => $user->role ?? null,
+            ]);
             abort(403, 'Unauthorized.');
         }
 

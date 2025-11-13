@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\ImportNote;
 use App\Models\ImportNoteItem;
 use Illuminate\Support\Facades\DB;
+use App\Models\ProductVariant;
 
 class ImportNoteService
 {
@@ -45,19 +46,36 @@ class ImportNoteService
 
             $total = 0;
             foreach ($data['items'] as $item) {
-                $subtotal = $item['quantity'] * $item['price'];
+                $price = $item['price'] ?? 0;
+                // if price not provided, try to get from product variant
+                if (empty($price) && !empty($item['product_variant_id'])) {
+                    $pv = ProductVariant::find($item['product_variant_id']);
+                    if ($pv) $price = $pv->price;
+                }
+
+                $subtotal = ($item['quantity'] ?? 0) * $price;
                 $total += $subtotal;
 
                 ImportNoteItem::create([
                     'import_note_id' => $note->id,
-                    'product_id' => $item['product_id'],
+                    'product_variant_id' => $item['product_variant_id'] ?? ($item['product_id'] ?? null),
                     'quantity' => $item['quantity'],
-                    'price' => $item['price'],
+                    'price' => $price,
                     'subtotal' => $subtotal,
                 ]);
             }
 
             $note->update(['total_price' => $total]);
+            // If note created as approved, immediately increment stock
+            if ($note->status === 'approved') {
+                foreach ($note->items as $it) {
+                    $pv = ProductVariant::find($it->product_variant_id);
+                    if ($pv) {
+                        $pv->quantity = ($pv->quantity ?? 0) + ($it->quantity ?? 0);
+                        $pv->save();
+                    }
+                }
+            }
             DB::commit();
             return $note;
         } catch (\Exception $e) {
@@ -81,13 +99,18 @@ class ImportNoteService
                 $note->items()->delete();
                 $total = 0;
                 foreach ($data['items'] as $item) {
-                    $subtotal = $item['quantity'] * $item['price'];
+                    $price = $item['price'] ?? 0;
+                    if (empty($price) && !empty($item['product_variant_id'])) {
+                        $pv = ProductVariant::find($item['product_variant_id']);
+                        if ($pv) $price = $pv->price;
+                    }
+                    $subtotal = ($item['quantity'] ?? 0) * $price;
                     $total += $subtotal;
                     ImportNoteItem::create([
                         'import_note_id' => $note->id,
-                        'product_id' => $item['product_id'],
+                        'product_variant_id' => $item['product_variant_id'] ?? ($item['product_id'] ?? null),
                         'quantity' => $item['quantity'],
-                        'price' => $item['price'],
+                        'price' => $price,
                         'subtotal' => $subtotal,
                     ]);
                 }

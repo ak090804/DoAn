@@ -13,7 +13,7 @@ class ImportNoteItem extends Model
 
     protected $fillable = [
         'import_note_id',
-        'product_id',
+        'product_variant_id',
         'quantity',
         'price',
         'subtotal',
@@ -26,6 +26,6 @@ class ImportNoteItem extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class, 'product_id');
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 }

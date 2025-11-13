@@ -34,6 +34,9 @@ Route::prefix('admin')->name('admin.')->middleware('admin.role')->group(function
 
     // Import notes routes
     Route::resource('import-notes', App\Http\Controllers\Admin\AdminImportNoteController::class);
+    Route::patch('import-notes/{id}/approve', [App\Http\Controllers\Admin\AdminImportNoteController::class, 'approve'])
+        ->name('import-notes.approve')
+        ->middleware('is.admin');
 });
 
 Route::get('/', function () {

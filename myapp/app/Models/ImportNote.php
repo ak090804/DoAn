@@ -27,4 +27,14 @@ class ImportNote extends Model
     {
         return $this->hasMany(ImportNoteItem::class, 'import_note_id');
     }
+
+    public function getStatusLabelAttribute()
+    {
+        $map = [
+            'pending' => 'Chờ xử lý',
+            'approved' => 'Đã duyệt',
+        ];
+
+        return $map[$this->status] ?? $this->status;
+    }
 }
