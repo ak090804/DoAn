@@ -16,6 +16,8 @@ class ClientHomeController extends Controller
 
     public function home()
     {
-        return view('client.home'); // view trang chủ
+        $topProducts = $this->productVariantService->getTopSellingProducts();
+        $newestProducts = $this->productVariantService->getNewestProducts();
+        return view('client.home', compact('topProducts', 'newestProducts')); // view trang chủ
     }    
 }

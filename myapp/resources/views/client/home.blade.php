@@ -106,25 +106,43 @@
       </span>
     </div>
 
-    {{-- sp ví dụ --}}
+    {{-- sp 5 sp mới nhất--}}
     <div class="swiper brand-carousel">
       <div class="swiper-wrapper">
-        <div class="swiper-slide">
-          <div class="card mb-3 p-3 rounded-4 shadow border-0">
-            <div class="row g-0">
-              <div class="col-md-4"><img src="images/product-thumb-11.jpg" class="img-fluid rounded"></div>
-              <div class="col-md-8">
-                <div class="card-body py-0">
-                  <p class="text-muted mb-0">Amber Jar</p>
-                  <h5>Honey best nectar you wish to get</h5>
+        @foreach ($newestProducts as $newestProduct)
+          <div class="swiper-slide">
+            <div class="card mb-3 p-3 rounded-4 shadow border-0">
+              <div class="row g-0">
+                {{-- Ảnh sản phẩm --}}
+                <div class="col-md-4">
+                  <a href="{{ route('client.productDetail', ['id' => $newestProduct->id]) }}">
+                    @if($newestProduct->image)
+                      <img src="{{ asset('storage/products/'.$newestProduct->image) }}" class="img-fluid rounded">
+                    @else
+                      <img src="images/no-image.jpg" class="img-fluid rounded">
+                    @endif
+                  </a>
+                </div>
+
+                {{-- Thông tin sản phẩm --}}
+                <div class="col-md-8">
+                  <div class="card-body py-0">
+                    <p class="text-muted mb-0">
+                      <a href="{{ route('client.productDetail', ['id' => $newestProduct->id]) }}">
+                        {{ $newestProduct->product->name }} {{ $newestProduct->brand }}
+                      </a>
+                    </p>
+                    <h5>
+                      {{ $newestProduct->description }}
+                    </h5>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        @endforeach
       </div>
     </div>
-
   </div>
 </section>
 
@@ -209,50 +227,56 @@
 <section class="py-5">
   <div class="container-fluid">
     <h2 class="my-5">Sản phẩm bán chạy</h2>
-
+    
     <div class="row">
       <div class="col-md-12">
         <div class="products-carousel swiper">
           <div class="swiper-wrapper">
-          
-            <div class="product-item swiper-slide">
-              <span class="badge bg-success position-absolute m-3">-15%</span>
-              <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
-              <figure>
-                <a href="#" title="Product Title">
-                  <img src="images/thumb-tomatoes.png"  class="tab-image">
-                </a>
-              </figure>
-              <h3>Sunstar Fresh Melon Juice</h3>
-              <span class="qty">1 Unit</span><span class="rating"><svg width="24" height="24" class="text-primary"><use xlink:href="#star-solid"></use></svg> 4.5</span>
-              <span class="price">$18.00</span>
-              <div class="d-flex align-items-center justify-content-between">
-                <div class="input-group product-qty">
-                    <span class="input-group-btn">
-                        <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
-                          <svg width="16" height="16"><use xlink:href="#minus"></use></svg>
-                        </button>
-                    </span>
-                    <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
-                    <span class="input-group-btn">
-                        <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
-                            <svg width="16" height="16"><use xlink:href="#plus"></use></svg>
-                        </button>
-                    </span>
+            @foreach ($topProducts as $topProduct)
+              @if ($topProduct->order_items_sum_quantity == 0) @continue @endif
+              <div class="product-item swiper-slide">
+                {{-- hình ảnh --}}
+                <figure>
+                  <a href="{{ route('client.productDetail', ['id' => $topProduct->id]) }}" title="Product Title">
+                    @if($topProduct->image)
+                        <img src="{{ asset('storage/products/'.$topProduct->image) }}" class="tab-image">
+                    @else
+                        <img src="images/no-image.jpg"  class="tab-image"> 
+                    @endif
+                  </a>
+                </figure>
+                {{-- tên sp --}}
+                <h3>
+                  <a href="{{ route('client.productDetail', ['id' => $topProduct->id]) }}" class="product-title text-dark text-decoration-none">{{ $topProduct->product->name }} {{ $topProduct->brand }}</a>
+                </h3>
+                {{-- số lượng đã bán --}}
+                <span class="qty">Đã bán: {{ $topProduct->order_items_sum_quantity }}</span>
+                {{-- giá --}}
+                <span class="price">{{ number_format($topProduct->price) }}đ</span>
+                {{-- nút tăng giảm sl --}}
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="input-group product-qty">
+                      <span class="input-group-btn">
+                          <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
+                            <svg width="16" height="16"><use xlink:href="#minus"></use></svg>
+                          </button>
+                      </span>
+                      <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
+                      <span class="input-group-btn">
+                          <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
+                              <svg width="16" height="16"><use xlink:href="#plus"></use></svg>
+                          </button>
+                      </span>
+                  </div>
+                  {{-- nút thêm vào giỏ --}}
+                  <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
                 </div>
-                <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
               </div>
-            </div>
-
-            
+            @endforeach
           </div>
         </div>
       </div>
-    </div>
-
-    
-    
-
+    </div>    
   </div>
 </section>
 

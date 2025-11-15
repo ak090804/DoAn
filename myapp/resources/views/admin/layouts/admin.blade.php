@@ -18,7 +18,7 @@
     <div class="border-end bg-light" id="sidebar-wrapper">
         <div class="sidebar-heading text-center py-4 fw-bold">Admin Panel</div>
             <div class="list-group list-group-flush">
-            <a href="#" class="list-group-item list-group-item-action">Dashboard</a>
+            <a href="{{ route('admin.dashboard') }}" class="list-group-item list-group-item-action">Dashboard</a>
             @php
                 $adminUserId = session('admin_user_id');
                 if ($adminUserId) {

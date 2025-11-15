@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\OrderService;
+use App\Services\ProductVariantService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -11,10 +12,13 @@ use Carbon\Carbon;
 class AdminDashboardController extends Controller
 {
     protected $orderService;
+    protected $productVariantService;
 
-    public function __construct(OrderService $orderService)
+    // Inject cả OrderService và ProductVariantService
+    public function __construct(OrderService $orderService, ProductVariantService $productVariantService)
     {
         $this->orderService = $orderService;
+        $this->productVariantService = $productVariantService;
     }
 
     /**
@@ -45,14 +49,8 @@ class AdminDashboardController extends Controller
             ->orderBy('day')
             ->get();
 
-        // Top 5 sản phẩm bán chạy (theo tổng số lượng)
-        $topProducts = DB::table('order_items')
-            ->join('products', 'order_items.product_id', '=', 'products.id')
-            ->select('products.name', DB::raw('SUM(order_items.quantity) as total_sold'))
-            ->groupBy('products.id', 'products.name')
-            ->orderByDesc('total_sold')
-            ->limit(5)
-            ->get();
+        // Top 5 sản phẩm bán chạy (theo tổng số lượng) thông qua service
+        $topProducts = $this->productVariantService->getTopSellingProducts();
 
         // Dữ liệu tổng quan
         $totalOrders = $stats->total_orders ?? 0;

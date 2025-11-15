@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products');
             $table->string('brand', 50)->nullable();
-            $table->string('attribute', 10)->nullable();
+            $table->string('attribute', 100)->nullable();
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2)->notNull();
             $table->text('image')->notNull();

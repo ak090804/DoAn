@@ -29,4 +29,9 @@ class ProductVariant extends Model
     {
         return $this->belongsTo(Supplier::class, 'supplier_id');
     }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItems::class, 'product_variant_id');
+    }
 }

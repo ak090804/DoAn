@@ -115,4 +115,22 @@ class ProductVariantService
             $variant->image = $imageName;
         }
     }
+
+    //lấy 5 sp bán chạy nhất
+    public function getTopSellingProducts(int $limit = 5)
+    {
+        return ProductVariant::with('product')
+            ->withSum('orderItems', 'quantity')
+            ->orderByDesc('order_items_sum_quantity')
+            ->limit($limit)
+            ->get();
+    }
+
+    //lấy 5 sp mới nhất
+    public function getNewestProducts(int $limit = 5)
+    {
+        return ProductVariant::orderByDesc('created_at')
+            ->limit($limit)
+            ->get();
+    }
 }

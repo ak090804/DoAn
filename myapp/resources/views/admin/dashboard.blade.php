@@ -58,10 +58,26 @@
             @endforeach
         </ul>
 
-        <h4>Top 5 sản phẩm bán chạy</ <!-- <ul>h4>
-            @foreach($topProducts as $p)
-            <li>{{ $p->name }} - {{ $p->total_sold }} sản phẩm</li>
-            @endforeach
-            </ul> -->
+        <h4>Top sản phẩm bán chạy</ </h4>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Số lượng đã bán</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($topProducts as $p)
+                        @if ($p->order_items_sum_quantity > 0)
+                            <tr>
+                                <td>{{ $p->product->name }} {{$p->brand}} {{$p->attribute}}</td>
+                                <td>{{ $p->order_items_sum_quantity }}</td>
+                            </tr>
+                        @endif
+                    @endforeach                        
+                </tbody>
+            </table>
+        </div>
     </div>
 @endsection
