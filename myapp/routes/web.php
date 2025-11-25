@@ -72,6 +72,7 @@ Route::post('/api/cart/remove', [CartController::class, 'removeFromCart'])->name
 Route::get('/api/cart/data', [CartController::class, 'getCartData'])->name('api.cart.data');
 Route::post('/api/cart/clear', [CartController::class, 'clearCart'])->name('api.cart.clear');
 Route::get('/api/cart/check-login', [CartController::class, 'checkLogin'])->name('api.cart.checkLogin');
+Route::post('/api/voucher/verify', [CartController::class, 'verifyVoucher'])->name('api.voucher.verify');
 
 // Checkout routes
 Route::get('/checkout', [CheckoutController::class, 'show'])->name('client.checkout');

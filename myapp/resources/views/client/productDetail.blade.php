@@ -169,72 +169,13 @@
 
     {{-- JS: Điều khiển số lượng --}}
     <script>
-        // Hàm thêm vào giỏ hàng
-        function addToCart(productId, quantity = 1) {
-            quantity = parseInt(quantity) || 1;
 
-            fetch('/api/cart/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({
-                    product_id: productId,
-                    quantity: quantity
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showNotification('Thêm vào giỏ hàng thành công!', 'success');
-                        updateCartBadge(data.cart_count);
-                    } else {
-                        showNotification('Lỗi: ' + data.message, 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showNotification('Có lỗi xảy ra. Vui lòng thử lại.', 'error');
-                });
-        }
-
-        // Cập nhật badge giỏ hàng
-        function updateCartBadge(count) {
-            const badge = document.querySelector('.cart-badge');
-            if (badge) {
-                badge.textContent = count;
-                badge.style.display = count > 0 ? 'inline-block' : 'none';
-            }
-        }
 
         // Định dạng giá
         function formatPrice(price) {
             return new Intl.NumberFormat('vi-VN').format(price);
         }
 
-        // Hiển thị thông báo
-        function showNotification(message, type = 'info') {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-            alertDiv.setAttribute('role', 'alert');
-            alertDiv.style.position = 'fixed';
-            alertDiv.style.top = '20px';
-            alertDiv.style.right = '20px';
-            alertDiv.style.zIndex = '9999';
-            alertDiv.style.minWidth = '300px';
-            alertDiv.innerHTML = `
-                                    ${message}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                `;
-
-            const container = document.querySelector('body');
-            container.insertBefore(alertDiv, container.firstChild);
-
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 3000);
-        }
 
         // Khởi tạo khi load trang
         document.addEventListener('DOMContentLoaded', function () {

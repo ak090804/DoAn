@@ -376,6 +376,65 @@
         <script src="{{ asset('js/script.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 
+        <script>
+          // global addToCart available to all views
+          async function addToCart(productId, quantity = 1) {
+            quantity = parseInt(quantity) || 1;
+            try {
+              const token = document.querySelector('meta[name="csrf-token"]').content;
+              const resp = await fetch('/api/cart/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': token },
+                body: JSON.stringify({ product_id: productId, quantity: quantity })
+              });
+              const data = await resp.json();
+              if (data.success) {
+                showNotification('Đã thêm vào giỏ hàng', 'success');
+                updateCartBadge(data.cart_count);
+              } else {
+                showNotification(data.message || 'Lỗi khi thêm vào giỏ hàng', 'danger');
+              }
+            } catch (err) {
+              console.error(err);
+              showNotification('Lỗi mạng, vui lòng thử lại', 'danger');
+            }
+          }
+
+          function updateCartBadge(count) {
+            var badge = document.querySelector('.cart-badge');
+            if (badge) {
+              badge.textContent = count;
+              badge.style.display = count > 0 ? 'inline-block' : 'none';
+            }
+          }
+
+          async function updateCartData() {
+            try {
+              const resp = await fetch('/api/cart/data');
+              const data = await resp.json();
+              if (data.success) updateCartBadge(data.cart_count);
+            } catch (err) {
+              console.error('Failed to update cart data', err);
+            }
+          }
+
+          function showNotification(message, type = 'info') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.style.position = 'fixed';
+            alertDiv.style.top = '20px';
+            alertDiv.style.right = '20px';
+            alertDiv.style.zIndex = 99999;
+            alertDiv.innerHTML = `${message} <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>`;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 3000);
+          }
+
+          document.addEventListener('DOMContentLoaded', function () {
+            updateCartData();
+          });
+        </script>
+
 
 </body>
 

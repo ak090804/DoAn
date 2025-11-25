@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             OrdersSeeder::class,
             OrderItemsSeeder::class,
             ImportNotesSeeder::class,
+            KhuyenMaisSeeder::class,
         ]);
     }
 }

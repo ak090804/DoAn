@@ -9,6 +9,7 @@ use App\Models\OrderItems;
 use App\Models\SavedCart;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Models\KhuyenMai;
 
 class CheckoutController extends Controller
 {
@@ -35,16 +36,36 @@ class CheckoutController extends Controller
             return redirect()->route('login');
         }
 
-        // Tính tổng
+        // Tính tổng (bao gồm B1G1 nếu có)
         $total = 0;
         foreach ($cart as $item) {
-            $total += $item['price'] * $item['quantity'];
+            $qty = isset($item['quantity']) ? intval($item['quantity']) : 0;
+            $price = isset($item['price']) ? floatval($item['price']) : 0;
+            $chargeQty = $qty;
+            if (!empty($item['is_bogo'])) {
+                $chargeQty = (int) ceil($qty / 2);
+            }
+            $total += $price * $chargeQty;
         }
+
+        // Load available order-level (giam_gia_hd) public promotions and filter by 10% rule
+        $allVouchers = KhuyenMai::active()->where('loai', 'giam_gia_hd')->where('is_private', false)->get();
+
+        // Filter vouchers: only show if discount <= 10% of total
+        $vouchers = $allVouchers->filter(function ($v) use ($total) {
+            $discount = floatval($v->gia_tri ?? 0);
+            if ($v->so_tien_giam_toi_da) {
+                $discount = min($discount, floatval($v->so_tien_giam_toi_da));
+            }
+            $percent = $total > 0 ? ($discount / $total) * 100 : 0;
+            return $percent <= 10;
+        });
 
         return view('client.checkout.index', [
             'cart' => $cart,
             'total' => $total,
-            'user' => $user
+            'user' => $user,
+            'vouchers' => $vouchers
         ]);
     }
 
@@ -81,10 +102,16 @@ class CheckoutController extends Controller
         }
 
         try {
-            // Tính tổng tiền
+            // Tính tổng tiền (áp dụng B1G1 nếu có)
             $totalPrice = 0;
             foreach ($cart as $item) {
-                $totalPrice += $item['price'] * $item['quantity'];
+                $qty = isset($item['quantity']) ? intval($item['quantity']) : 0;
+                $price = isset($item['price']) ? floatval($item['price']) : 0;
+                $chargeQty = $qty;
+                if (!empty($item['is_bogo'])) {
+                    $chargeQty = (int) ceil($qty / 2);
+                }
+                $totalPrice += $price * $chargeQty;
             }
 
             // Lưu snapshot giỏ hàng vào DB (SavedCart) trước khi tạo đơn
@@ -107,23 +134,50 @@ class CheckoutController extends Controller
                 ]
             );
 
+            // Apply voucher if provided
+            $discountAmount = 0;
+            $khuyenMaiId = null;
+            if ($request->filled('voucher_code') || $request->filled('voucher_manual')) {
+                $code = $request->input('voucher_code') ?: $request->input('voucher_manual');
+                $promo = KhuyenMai::where('ma', $code)->where('loai', 'giam_gia_hd')->active()->first();
+                if ($promo) {
+                    // Treat gia_tri as fixed discount amount; cap with so_tien_giam_toi_da if set
+                    $discountAmount = floatval($promo->gia_tri ?? 0);
+                    if ($promo->so_tien_giam_toi_da) {
+                        $discountAmount = min($discountAmount, floatval($promo->so_tien_giam_toi_da));
+                    }
+                    $khuyenMaiId = $promo->id;
+                }
+            }
+
+            $finalTotal = max(0, $totalPrice - $discountAmount);
+
             // Tạo đơn hàng (tham chiếu tới customer_id)
             $order = Order::create([
                 'customer_id' => $customer->id,
-                'total_price' => $totalPrice,
+                'total_price' => $finalTotal,
+                'discount_amount' => $discountAmount,
+                'khuyen_mai_id' => $khuyenMaiId,
                 'status' => 'pending',
                 'note' => $validated['note'] ?? null
             ]);
 
             // Tạo chi tiết đơn hàng
             foreach ($cart as $productVariantId => $item) {
+                // determine charged subtotal considering B1G1
+                $qty = isset($item['quantity']) ? intval($item['quantity']) : 0;
+                $price = isset($item['price']) ? floatval($item['price']) : 0;
+                $chargeQty = $qty;
+                if (!empty($item['is_bogo'])) {
+                    $chargeQty = (int) ceil($qty / 2);
+                }
                 // Save using product_variant_id (matches OrderItems model)
                 OrderItems::create([
                     'order_id' => $order->id,
                     'product_variant_id' => $productVariantId,
-                    'quantity' => $item['quantity'],
-                    'price' => $item['price'],
-                    'subtotal' => $item['price'] * $item['quantity']
+                    'quantity' => $qty,
+                    'price' => $price,
+                    'subtotal' => $price * $chargeQty
                 ]);
             }
 

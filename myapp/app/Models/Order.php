@@ -13,6 +13,8 @@ class Order extends Model
         'customer_id',
         'employee_id',
         'total_price',
+        'khuyen_mai_id',
+        'discount_amount',
         'status',
         'note',
     ];
