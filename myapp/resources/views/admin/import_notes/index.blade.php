@@ -39,7 +39,7 @@
                                     $canEdit = (isset($currentRole) && $currentRole === 'admin') || (isset($currentEmployee) && $note->employee_id == $currentEmployee->id);
                                 @endphp
                                 @if($canEdit)
-                                    <a href="{{ route('admin.import-notes.edit', $note) }}" class="btn btn-warning btn-sm">Sửa</a>
+                                    <a href="{{ route('admin.import-notes.edit', $note) }}" class="btn btn-warning btn-sm btn-edit">Sửa</a>
                                 @endif
                                 @if($note->status === 'pending' && (!isset($currentRole) || $currentRole !== 'inventory'))
                                         <button class="btn btn-success btn-sm approve-btn" data-id="{{ $note->id }}" data-url="{{ route('admin.import-notes.approve', $note->id) }}" onclick="approveNote(event)">Duyệt</button>
@@ -48,7 +48,7 @@
                                 <form action="{{ route('admin.import-notes.destroy', $note) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger btn-sm" onclick="return confirm('Xóa?')">Xóa</button>
+                                    <button class="btn btn-danger btn-sm btn-delete" onclick="return confirm('Xóa?')">Xóa</button>
                                 </form>
                                 @endif
                             </td>

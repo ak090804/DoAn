@@ -33,11 +33,11 @@
                     <td>{{ $s->email }}</td>
                     <td>
                         <a href="{{ route('admin.suppliers.show', $s) }}" class="btn btn-info btn-sm">Xem sản phẩm</a>
-                        <a href="{{ route('admin.suppliers.edit', $s) }}" class="btn btn-warning btn-sm">Sửa</a>
+                        <a href="{{ route('admin.suppliers.edit', $s) }}" class="btn btn-warning btn-sm btn-edit">Sửa</a>
                         <form action="{{ route('admin.suppliers.destroy', $s) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-danger btn-sm" onclick="return confirm('Xóa?')">Xóa</button>
+                            <button class="btn btn-danger btn-sm btn-delete" onclick="return confirm('Xóa?')">Xóa</button>
                         </form>
                     </td>
                 </tr>

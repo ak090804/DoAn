@@ -1,6 +1,6 @@
 @extends('admin.layouts.admin')
 
-@section('title', 'Edit Customer')
+@section('title', 'Sửa Khách Hàng')
 
 @section('content')
 <div class="container mt-4">
@@ -32,15 +32,15 @@
             <input type="email" name="email" class="form-control" value="{{ old('email', $customer->user->email ?? $customer->email ?? '') }}">
         </div>
         <div class="mb-3">
-            <label class="form-label">Password (để trống nếu không đổi)</label>
+            <label class="form-label">Mật Khẩu (để trống nếu không đổi)</label>
             <input type="password" name="password" class="form-control">
         </div>
         <div class="mb-3">
-            <label class="form-label">Phone</label>
+            <label class="form-label">Số Điện Thoại</label>
             <input type="text" name="phone" class="form-control" value="{{ old('phone', $customer->phone) }}">
         </div>
         <div class="mb-3">
-            <label class="form-label">Address</label>
+            <label class="form-label">Địa Chỉ</label>
             <textarea name="address" class="form-control">{{ old('address', $customer->address) }}</textarea>
         </div>
 

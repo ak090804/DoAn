@@ -12,7 +12,7 @@
         <div class="col-sm-6">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Bảng Điều Khiển</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('admin.orders.index') }}">Đơn hàng</a></li>
                     <li class="breadcrumb-item active">{{ isset($order) ? 'Sửa' : 'Tạo mới' }}</li>
                 </ol>

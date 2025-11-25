@@ -12,8 +12,8 @@
         <div class="col-sm-6">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.employees.index') }}">Employees</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Bảng Điều Khiển</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.employees.index') }}">Nhân Viên</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Chi tiết</li>
                 </ol>
             </nav>

@@ -8,13 +8,13 @@
     <!-- Breadcrumbs -->
     <div class="row mb-4">
         <div class="col-sm-4">
-            <h4 class="page-title" style="color: black;">Customers</h4>
+            <h4 class="page-title" style="color: black;">Khách Hàng</h4>
         </div>
         <div class="col-sm-8">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Customers</li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Bảng Điều Khiển</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Khách Hàng</li>
                 </ol>
             </nav>
         </div>
@@ -53,8 +53,8 @@
                 <th>ID</th>
                 <th>Tên</th>
                 <th>Email</th>
-                <th>Phone</th>
-                <th>Address</th>
+                <th>Số Điện Thoại</th>
+                <th>Địa Chỉ</th>
                 <th>Hành động</th>
             </tr>
         </thead>
@@ -69,11 +69,11 @@
                     <td>
                         <a href="{{ route('admin.customers.show', $customer) }}" class="btn btn-info btn-sm">Xem</a>
                         @if($role === 'admin')
-                            <a href="{{ route('admin.customers.edit', $customer) }}" class="btn btn-warning btn-sm">Sửa</a>
+                            <a href="{{ route('admin.customers.edit', $customer) }}" class="btn btn-warning btn-sm btn-edit">Sửa</a>
                             <form action="{{ route('admin.customers.destroy', $customer) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-danger btn-sm">Xóa</button>
+                                <button class="btn btn-danger btn-sm btn-delete">Xóa</button>
                             </form>
                         @endif
                     </td>

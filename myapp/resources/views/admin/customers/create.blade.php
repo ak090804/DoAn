@@ -31,15 +31,15 @@
             <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
         </div>
         <div class="mb-3">
-            <label class="form-label">Password (bắt buộc)</label>
+            <label class="form-label">Mật Khẩu (bắt buộc)</label>
             <input type="password" name="password" class="form-control" required>
         </div>
         <div class="mb-3">
-            <label class="form-label">Phone</label>
+            <label class="form-label">Số Điện Thoại</label>
             <input type="text" name="phone" class="form-control" value="{{ old('phone') }}">
         </div>
         <div class="mb-3">
-            <label class="form-label">Address</label>
+            <label class="form-label">Địa Chỉ</label>
             <textarea name="address" class="form-control">{{ old('address') }}</textarea>
         </div>
 

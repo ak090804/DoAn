@@ -31,7 +31,7 @@
             <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
         </div>
         <div class="mb-3">
-            <label class="form-label">Password (bắt buộc)</label>
+            <label class="form-label">Mật Khẩu (bắt buộc)</label>
             <input type="password" name="password" class="form-control" required>
         </div>
         <div class="mb-3">

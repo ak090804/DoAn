@@ -16,11 +16,11 @@
     </div>
 
     <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Quay lại</a>
-    <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-warning">Sửa</a>
+    <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-warning btn-edit">Sửa</a>
     <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="d-inline">
         @csrf
         @method('DELETE')
-        <button class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa người dùng này?')">Xóa</button>
+        <button class="btn btn-danger btn-delete" onclick="return confirm('Bạn có chắc muốn xóa người dùng này?')">Xóa</button>
     </form>
 </div>
 @endsection

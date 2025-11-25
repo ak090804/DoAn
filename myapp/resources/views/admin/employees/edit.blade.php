@@ -1,6 +1,6 @@
 @extends('admin.layouts.admin')
 
-@section('title', 'Edit Employee')
+@section('title', 'Sửa Nhân Viên')
 
 @section('content')
 <div class="container mt-4">
@@ -12,8 +12,8 @@
         <div class="col-sm-6">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.employees.index') }}">Employees</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Bảng Điều Khiển</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.employees.index') }}">Nhân Viên</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Sửa</li>
                 </ol>
             </nav>
@@ -53,16 +53,16 @@
                 <input type="email" id="cashier-email" name="email" class="form-control" value="{{ old('email', $employee->email) }}">
             </div>
             <div class="mb-3">
-                <label class="form-label">Password {{ $employee->user_id ? '(để đổi mật khẩu, để trống nếu không đổi)' : '(bắt buộc nếu chưa có tài khoản)' }} (Thu ngân / Kiểm kho)</label>
+                <label class="form-label">Mật Khẩu {{ $employee->user_id ? '(để đổi mật khẩu, để trống nếu không đổi)' : '(bắt buộc nếu chưa có tài khoản)' }} (Thu ngân / Kiểm kho)</label>
                 <input type="password" id="cashier-password" name="password" class="form-control">
             </div>
         </div>
         <div class="mb-3">
-            <label class="form-label">Phone</label>
+            <label class="form-label">Số Điện Thoại</label>
             <input type="text" name="phone" class="form-control" value="{{ old('phone', $employee->phone) }}">
         </div>
         <div class="mb-3">
-            <label class="form-label">Address</label>
+            <label class="form-label">Địa Chỉ</label>
             <textarea name="address" class="form-control">{{ old('address', $employee->address) }}</textarea>
         </div>
         <div class="mb-3">

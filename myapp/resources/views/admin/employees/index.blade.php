@@ -8,13 +8,13 @@
     <!-- Breadcrumbs -->
     <div class="row mb-4">
         <div class="col-sm-4">
-            <h4 class="page-title" style="color: black;">Employees</h4>
+            <h4 class="page-title" style="color: black;">Nhân Viên</h4>
         </div>
         <div class="col-sm-8">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Employees</li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Bảng Điều Khiển</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Nhân Viên</li>
                 </ol>
             </nav>
         </div>
@@ -51,7 +51,7 @@
                 <th>ID</th>
                 <th>Tên</th>
                 <th>Email</th>
-                <th>Phone</th>
+                <th>Số Điện Thoại</th>
                 <th>Vị trí</th>
                 <th>Hired At</th>
                 <th>Hành động</th>
@@ -68,11 +68,11 @@
                     <td>{{ $employee->hired_at?->format('Y-m-d') }}</td>
                     <td>
                         <a href="{{ route('admin.employees.show', $employee) }}" class="btn btn-success btn-sm">Xem</a>
-                        <a href="{{ route('admin.employees.edit', $employee) }}" class="btn btn-warning btn-sm">Sửa</a>
+                        <a href="{{ route('admin.employees.edit', $employee) }}" class="btn btn-warning btn-sm btn-edit">Sửa</a>
                         <form action="{{ route('admin.employees.destroy', $employee) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-danger btn-sm">Xóa</button>
+                            <button class="btn btn-danger btn-sm btn-delete">Xóa</button>
                         </form>
                     </td>
                 </tr>

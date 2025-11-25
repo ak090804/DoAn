@@ -12,8 +12,8 @@
         <div class="col-sm-8">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Product Variants</li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Bảng Điều Khiển</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Biến Thể Sản Phẩm</li>
                 </ol>
             </nav>
         </div>
@@ -106,11 +106,11 @@
                     </td>
                     <td>
                         @if($role === 'admin')
-                            <a href="{{ route('admin.productVariants.edit', $variant) }}" class="btn btn-warning btn-sm">Sửa</a>
+                            <a href="{{ route('admin.productVariants.edit', $variant) }}" class="btn btn-warning btn-sm btn-edit">Sửa</a>
                             <form action="{{ route('admin.productVariants.destroy', $variant) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-danger btn-sm">Xóa</button>
+                                <button class="btn btn-danger btn-sm btn-delete">Xóa</button>
                             </form>
                         @endif
                     </td>

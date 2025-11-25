@@ -12,7 +12,7 @@
         <div class="col-sm-8">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Bảng Điều Khiển</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Đơn hàng</li>
                 </ol>
             </nav>
@@ -112,13 +112,13 @@
                         <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
                         <td>
                             <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-info btn-sm">Chi tiết</a>
-                            <a href="{{ route('admin.orders.edit', $order) }}" class="btn btn-warning btn-sm">Sửa</a>
+                            <a href="{{ route('admin.orders.edit', $order) }}" class="btn btn-warning btn-sm btn-edit">Sửa</a>
                             @if($order->status != 'completed' && $order->status != 'cancelled')
                                 <form action="{{ route('admin.orders.destroy', $order) }}" method="POST" class="d-inline" 
                                     onsubmit="return confirm('Bạn có chắc muốn xóa đơn hàng này?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger btn-sm">Xóa</button>
+                                    <button class="btn btn-danger btn-sm btn-delete">Xóa</button>
                                 </form>
                             @endif
                         </td>

@@ -9,13 +9,13 @@
     <!-- Breadcrumbs -->
     <div class="row mb-4">
         <div class="col-sm-4">
-            <h4 class="page-title" style="color: black;">Categories</h4>
+            <h4 class="page-title" style="color: black;">Danh Mục</h4>
         </div>
         <div class="col-sm-8">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Categories</li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Bảng Điều Khiển</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Danh Mục</li>
                 </ol>
             </nav>
         </div>
@@ -51,11 +51,11 @@
                     <td>
                         <a href="{{ route('admin.products.index', ['category_id' => $category->id]) }}" class="btn btn-success btn-sm">Xem</a>
                         @if($role === 'admin')
-                            <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-warning btn-sm">Sửa</a>
+                            <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-warning btn-sm btn-edit">Sửa</a>
                             <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-danger btn-sm">Xóa</button>
+                                <button class="btn btn-danger btn-sm btn-delete">Xóa</button>
                             </form>
                         @endif
                     </td>

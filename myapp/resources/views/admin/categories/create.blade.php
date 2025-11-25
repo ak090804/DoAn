@@ -8,14 +8,14 @@
     <!-- Breadcrumbs -->
     <div class="row mb-4">
         <div class="col-sm-4">
-            <h4 class="page-title" style="color: black;">Create New Categories</h4>
+            <h4 class="page-title" style="color: black;">Tạo Danh Mục Mới</h4>
         </div>
         <div class="col-sm-8">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ url('/admin/categories') }}">Categories</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Create</li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Bảng Điều Khiển</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin/categories') }}">Danh Mục</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Tạo</li>
                 </ol>
             </nav>
         </div>

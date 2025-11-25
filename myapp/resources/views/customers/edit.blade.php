@@ -32,7 +32,7 @@
             <input type="email" name="email" class="form-control" value="{{ old('email', $customer->user->email ?? $customer->email ?? '') }}">
         </div>
         <div class="mb-3">
-            <label class="form-label">Password (để trống nếu không đổi)</label>
+            <label class="form-label">Mật Khẩu (để trống nếu không đổi)</label>
             <input type="password" name="password" class="form-control">
         </div>
         <div class="mb-3">

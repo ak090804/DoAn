@@ -7,14 +7,14 @@
 
     <div class="row mb-4">
         <div class="col-sm-4">
-            <h4 class="page-title" style="color: black;">Create New Product</h4>
+            <h4 class="page-title" style="color: black;">Tạo Sản Phẩm Mới</h4>
         </div>
         <div class="col-sm-8">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ url('/admin/products') }}">Products</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Create</li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Bảng Điều Khiển</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin/products') }}">Sản Phẩm</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Tạo</li>
                 </ol>
             </nav>
         </div>

@@ -12,9 +12,9 @@
         <div class="col-sm-8">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ url('/admin/productVariants') }}">Product Variants</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Edit</li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Bảng Điều Khiển</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin/productVariants') }}">Biến Thể Sản Phẩm</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Sửa</li>
                 </ol>
             </nav>
         </div>

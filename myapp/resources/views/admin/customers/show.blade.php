@@ -12,7 +12,7 @@
         <div class="col-sm-8">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Bảng Điều Khiển</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('admin.customers.index') }}">Khách hàng</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Chi tiết</li>
                 </ol>
@@ -25,13 +25,13 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Thông tin khách hàng #{{ $customer->id }}</h5>
                 <div>
-                    <a href="{{ route('admin.customers.edit', $customer) }}" class="btn btn-warning">Sửa</a>
-                    <form action="{{ route('admin.customers.destroy', $customer) }}" method="POST" class="d-inline" 
-                          onsubmit="return confirm('Bạn có chắc muốn xóa khách hàng này?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Xóa</button>
-                    </form>
+                        <a href="{{ route('admin.customers.edit', $customer) }}" class="btn btn-warning btn-edit">Sửa</a>
+                        <form action="{{ route('admin.customers.destroy', $customer) }}" method="POST" class="d-inline" 
+                              onsubmit="return confirm('Bạn có chắc muốn xóa khách hàng này?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-delete">Xóa</button>
+                        </form>
                 </div>
             </div>
         </div>
