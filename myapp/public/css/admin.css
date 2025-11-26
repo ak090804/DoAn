@@ -304,8 +304,9 @@ footer {
 }
 
 .table thead {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #fff;
+    /* Use a light header background and dark text for contrast */
+    background: #f1f5f9;
+    color: #0f172a;
 }
 
 .table thead th {
@@ -315,7 +316,7 @@ footer {
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: rgba(255, 255, 255, 0.95);
+    color: #0f172a !important;
     vertical-align: middle;
 }
 
