@@ -154,11 +154,13 @@
     </div>
   </section>
 
-  <!-- Sản phẩm Hot -->
+  <!-- Sản phẩm Gợi ý -->
   <section class="py-5">
     <div class="container-fluid">
       <div class="tabs-header d-flex justify-content-between border-bottom my-5">
-        <h3>Sản phẩm Hot</h3>
+        <h3>
+          {{ (isset($recommendedProducts) && $recommendedProducts->isNotEmpty()) ? 'Sản phẩm gợi ý cho bạn' : 'Sản phẩm Hot' }}
+        </h3>
         <nav>
           <div class="nav nav-tabs">
             <a href="#" class="nav-link active" data-bs-toggle="tab" data-bs-target="#nav-all">All</a>
@@ -167,52 +169,100 @@
           </div>
         </nav>
       </div>
+
       <div class="tab-content">
         <div class="tab-pane fade show active" id="nav-all">
-          <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+          <div class="products-carousel swiper">
+            <div class="swiper-wrapper">
 
-            {{-- sp ví dụ --}}
-            <div class="col">
-              <div class="product-item">
-                <span class="badge bg-success position-absolute m-3">-30%</span>
-                <a href="#" class="btn-wishlist"><svg width="24" height="24">
-                    <use xlink:href="#heart"></use>
-                  </svg></a>
-                <figure>
-                  <a href="#" title="Product Title">
-                    <img src="images/thumb-bananas.png" class="tab-image">
-                  </a>
-                </figure>
-                <h3>Sunstar Fresh Melon Juice</h3>
-                <span class="qty">1 Unit</span><span class="rating"><svg width="24" height="24" class="text-primary">
-                    <use xlink:href="#star-solid"></use>
-                  </svg> 4.5</span>
-                <span class="price">$18.00</span>
-                <div class="d-flex align-items-center justify-content-between">
-                  <div class="input-group product-qty">
-                    <span class="input-group-btn">
-                      <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
-                        <svg width="16" height="16">
-                          <use xlink:href="#minus"></use>
-                        </svg>
-                      </button>
-                    </span>
-                    <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
-                    <span class="input-group-btn">
-                      <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
-                        <svg width="16" height="16">
-                          <use xlink:href="#plus"></use>
-                        </svg>
-                      </button>
-                    </span>
+              @if(isset($recommendedProducts) && $recommendedProducts->isNotEmpty())
+                @foreach($recommendedProducts as $variant)
+                  <div class="product-item swiper-slide">
+                    <a href="#" class="btn-wishlist"><svg width="24" height="24">
+                        <use xlink:href="#heart"></use>
+                      </svg></a>
+                    <figure>
+                      <a href="{{ route('client.productDetail', ['id' => $variant->id]) }}" title="Product Title">
+                        @if($variant->image)
+                          <img src="{{ asset('storage/products/' . $variant->image) }}" class="tab-image">
+                        @else
+                          <img src="images/no-image.jpg" class="tab-image">
+                        @endif
+                      </a>
+                    </figure>
+                    <h3>{{ $variant->product->name ?? 'Product' }} {{ $variant->brand ?? '' }}</h3>
+                    <span class="qty">{{ $variant->quantity ?? '1' }} Unit</span>
+                    <span class="price">{{ isset($variant->price) ? number_format($variant->price) . 'đ' : '' }}</span>
+                    <div class="d-flex align-items-center justify-content-between">
+                      <div class="input-group product-qty">
+                        <span class="input-group-btn">
+                          <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus"><svg
+                              width="16" height="16">
+                              <use xlink:href="#minus"></use>
+                            </svg></button>
+                        </span>
+                        <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
+                        <span class="input-group-btn">
+                          <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus"><svg
+                              width="16" height="16">
+                              <use xlink:href="#plus"></use>
+                            </svg></button>
+                        </span>
+                      </div>
+                      <a href="#" class="nav-link"
+                        onclick="event.preventDefault(); var qtyInput=this.closest('.product-item').querySelector('input[name=quantity]'); var qty=(qtyInput?qtyInput.value:1); addToCart({{ $variant->id }}, qty); return false;">Add
+                        to Cart <iconify-icon icon="uil:shopping-cart"></iconify-icon></a>
+                    </div>
                   </div>
-                  <a href="#" class="nav-link"
-                    onclick="event.preventDefault(); var qtyInput=this.closest('.product-item').querySelector('input[name=quantity]'); var qty=(qtyInput?qtyInput.value:1); addToCart({{ $newestProduct->id }}, qty); return false;">Add
-                    to Cart <iconify-icon icon="uil:shopping-cart"></a>
-                </div>
-              </div>
-            </div>
+                @endforeach
+              @else
+                @foreach ($topProducts as $topProduct)
+                  @if ($topProduct->order_items_sum_quantity == 0) @continue @endif
+                  <div class="product-item swiper-slide">
+                    @if(isset($giftPromotions[$topProduct->id]))
+                      <span class="badge bg-success position-absolute m-3" style="top: 0; right: 0;">Mua 1 Tăng 1</span>
+                    @endif
+                    <figure>
+                      <a href="{{ route('client.productDetail', ['id' => $topProduct->id]) }}" title="Product Title">
+                        @if($topProduct->image)
+                          <img src="{{ asset('storage/products/' . $topProduct->image) }}" class="tab-image">
+                        @else
+                          <img src="images/no-image.jpg" class="tab-image">
+                        @endif
+                      </a>
+                    </figure>
+                    <h3>
+                      <a href="{{ route('client.productDetail', ['id' => $topProduct->id]) }}"
+                        class="product-title text-dark text-decoration-none">{{ $topProduct->product->name }}
+                        {{ $topProduct->brand }}</a>
+                    </h3>
+                    <span class="qty">Đã bán: {{ $topProduct->order_items_sum_quantity }}</span>
+                    <span class="price">{{ number_format($topProduct->price) }}đ</span>
+                    <div class="d-flex align-items-center justify-content-between">
+                      <div class="input-group product-qty">
+                        <span class="input-group-btn">
+                          <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus"><svg
+                              width="16" height="16">
+                              <use xlink:href="#minus"></use>
+                            </svg></button>
+                        </span>
+                        <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
+                        <span class="input-group-btn">
+                          <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus"><svg
+                              width="16" height="16">
+                              <use xlink:href="#plus"></use>
+                            </svg></button>
+                        </span>
+                      </div>
+                      <a href="#" class="nav-link"
+                        onclick="event.preventDefault(); var qtyInput=this.closest('.product-item').querySelector('input[name=quantity]'); var qty=(qtyInput?qtyInput.value:1); addToCart({{ $topProduct->id }}, qty); return false;">Add
+                        to Cart <iconify-icon icon="uil:shopping-cart"></iconify-icon></a>
+                    </div>
+                  </div>
+                @endforeach
+              @endif
 
+            </div>
           </div>
         </div>
       </div>

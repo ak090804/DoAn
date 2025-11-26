@@ -10,6 +10,7 @@ use App\Models\SavedCart;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Models\KhuyenMai;
+use App\Jobs\UpdateRecommendationsForOrder;
 
 class CheckoutController extends Controller
 {
@@ -190,6 +191,13 @@ class CheckoutController extends Controller
                 }
             } catch (\Exception $e) {
                 // không block nếu việc cập nhật trạng thái saved cart lỗi
+            }
+
+            // Dispatch job to update recommendations asynchronously
+            try {
+                UpdateRecommendationsForOrder::dispatch($order->id);
+            } catch (\Exception $e) {
+                // don't block order creation if dispatch fails
             }
 
             session()->forget('cart');
