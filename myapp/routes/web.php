@@ -45,12 +45,17 @@ Route::get('/', function () {
 
 // Authentication routes (simple session-based auth)
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EmailVerificationController;
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+Route::post('/register', [EmailVerificationController::class, 'register'])->name('register.post');
+
+// Email verification routes
+Route::post('/register/send-code', [EmailVerificationController::class, 'sendCode'])->name('register.send-code');
+Route::post('/register/verify-code', [EmailVerificationController::class, 'verifyCode'])->name('register.verify-code');
 
 // Account page
 Route::get('/account', [AuthController::class, 'account'])->name('account');

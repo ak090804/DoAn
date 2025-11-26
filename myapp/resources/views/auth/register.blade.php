@@ -84,6 +84,7 @@
             border: 1px solid #e1e6ea;
             border-radius: 8px;
             font-size: 14px;
+            box-sizing: border-box;
         }
 
         .actions {
@@ -91,6 +92,7 @@
             align-items: center;
             justify-content: space-between;
             margin-top: 20px;
+            gap: 10px;
         }
 
         .btn {
@@ -102,10 +104,16 @@
             border: none;
             cursor: pointer;
             transition: 0.2s;
+            flex: 1;
         }
 
         .btn:hover {
             background: #ffd600;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .secondary {
@@ -114,6 +122,9 @@
             padding: 10px 14px;
             border-radius: 8px;
             text-decoration: none;
+            display: inline-block;
+            flex: 1;
+            text-align: center;
         }
 
         .error {
@@ -136,6 +147,14 @@
             color: #555;
             margin: 4px 0 12px;
             text-align: left;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
         }
     </style>
 </head>
@@ -164,54 +183,185 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('register.post') }}">
-                @csrf
+            <!-- Step 1: Enter Email -->
+            <div id="step1" class="step active">
+                <form id="step1Form">
+                    @csrf
+                    <div class="field">
+                        <label for="step1_email">Email</label>
+                        <input id="step1_email" name="email" type="email" placeholder="Nhập email" required>
+                    </div>
+                    <p class="note">Chúng tôi sẽ gửi mã xác thực đến email của bạn</p>
+                    <div class="actions">
+                        <button class="btn" type="button" id="sendCodeBtn">Gửi mã xác thực</button>
+                        <a href="{{ route('login') }}" class="secondary">Đăng nhập</a>
+                    </div>
+                </form>
+            </div>
 
-                <div class="field">
-                    <label for="name">Họ và tên</label>
-                    <input id="name" name="name" type="text" value="{{ old('name') }}" placeholder="Nhập họ và tên"
-                        required>
-                </div>
+            <!-- Step 2: Verify Code -->
+            <div id="step2" class="step">
+                <form id="step2Form">
+                    @csrf
+                    <input type="hidden" id="verified_email" name="email">
+                    
+                    <div class="field">
+                        <label>Mã xác thực đã được gửi đến email của bạn</label>
+                        <input id="verification_code" name="verification_code" type="text" placeholder="Nhập 6 chữ số" maxlength="6" required pattern="\d{6}">
+                    </div>
+                    <p class="note">Nhập mã 6 chữ số từ email</p>
+                    <div class="actions">
+                        <button class="btn" type="button" id="verifyCodeBtn">Xác thực</button>
+                        <button class="btn secondary" type="button" id="backBtn">Quay lại</button>
+                    </div>
+                </form>
+            </div>
 
-                <div class="field">
-                    <label for="email">Email</label>
-                    <input id="email" name="email" type="email" value="{{ old('email') }}" placeholder="Nhập email"
-                        required>
-                </div>
+            <!-- Step 3: Fill in personal info -->
+            <div id="step3" class="step">
+                <form id="step3Form" method="POST" action="{{ route('register.post') }}">
+                    @csrf
+                    <input type="hidden" id="final_email" name="email">
 
-                <div class="field">
-                    <label for="password">Mật khẩu</label>
-                    <input id="password" name="password" type="password" placeholder="Nhập mật khẩu" required>
-                </div>
+                    <div class="field">
+                        <label for="name">Họ và tên</label>
+                        <input id="name" name="name" type="text" placeholder="Nhập họ và tên" required>
+                    </div>
 
-                <div class="field">
-                    <label for="password_confirmation">Xác nhận mật khẩu</label>
-                    <input id="password_confirmation" name="password_confirmation" type="password"
-                        placeholder="Nhập lại mật khẩu" required>
-                </div>
+                    <div class="field">
+                        <label for="password">Mật khẩu</label>
+                        <input id="password" name="password" type="password" placeholder="Nhập mật khẩu" required>
+                    </div>
 
-                <div class="field">
-                    <label for="phone">Số điện thoại</label>
-                    <input id="phone" name="phone" type="text" value="{{ old('phone') }}"
-                        placeholder="Nhập số điện thoại" required>
-                </div>
+                    <div class="field">
+                        <label for="password_confirmation">Xác nhận mật khẩu</label>
+                        <input id="password_confirmation" name="password_confirmation" type="password" placeholder="Nhập lại mật khẩu" required>
+                    </div>
 
-                <div class="field">
-                    <label for="address">Địa chỉ</label>
-                    <input id="address" name="address" type="text" value="{{ old('address') }}"
-                        placeholder="Nhập địa chỉ của bạn">
-                </div>
-                <hr>
+                    <div class="field">
+                        <label for="phone">Số điện thoại</label>
+                        <input id="phone" name="phone" type="text" placeholder="Nhập số điện thoại" required>
+                    </div>
 
+                    <div class="field">
+                        <label for="address">Địa chỉ</label>
+                        <input id="address" name="address" type="text" placeholder="Nhập địa chỉ của bạn">
+                    </div>
+                    <hr>
 
-
-                <div class="actions">
-                    <button class="btn" type="submit">Đăng ký</button>
-                    <a href="{{ route('login') }}" class="secondary">Đăng nhập</a>
-                </div>
-            </form>
+                    <div class="actions">
+                        <button class="btn" type="submit">Đăng ký</button>
+                        <button class="btn secondary" type="button" id="backBtn2">Quay lại</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+
+    <script>
+        function showStep(stepNum) {
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step3').classList.remove('active');
+            document.getElementById('step' + stepNum).classList.add('active');
+        }
+
+        document.getElementById('sendCodeBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('step1_email').value;
+            const btn = this;
+            
+            if (!email) {
+                alert('Vui lòng nhập email');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Đang gửi...';
+
+            const csrfToken = document.querySelector('#step1Form input[name="_token"]').value;
+
+            fetch('{{ route("register.send-code") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('verified_email').value = email;
+                    showStep(2);
+                    alert('Mã xác thực đã được gửi! Kiểm tra email của bạn.');
+                } else {
+                    alert(data.message || 'Lỗi gửi mã');
+                }
+            })
+            .catch(err => {
+                alert('Lỗi: ' + err.message);
+                console.error(err);
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.textContent = 'Gửi mã xác thực';
+            });
+        });
+
+        document.getElementById('verifyCodeBtn').addEventListener('click', function() {
+            const email = document.getElementById('verified_email').value;
+            const code = document.getElementById('verification_code').value;
+            const btn = this;
+
+            if (code.length !== 6 || !/^\d{6}$/.test(code)) {
+                alert('Mã xác thực phải là 6 chữ số');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Đang xác thực...';
+
+            const csrfToken = document.querySelector('#step2Form input[name="_token"]').value;
+
+            fetch('{{ route("register.verify-code") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ email: email, code: code })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('final_email').value = email;
+                    showStep(3);
+                    alert('Xác thực thành công! Điền thông tin cá nhân để hoàn tất đăng ký.');
+                } else {
+                    alert(data.message || 'Lỗi xác thực');
+                    document.getElementById('verification_code').value = '';
+                }
+            })
+            .catch(err => {
+                alert('Lỗi: ' + err.message);
+                console.error(err);
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.textContent = 'Xác thực';
+            });
+        });
+
+        document.getElementById('backBtn').addEventListener('click', function() {
+            showStep(1);
+            document.getElementById('verification_code').value = '';
+        });
+
+        document.getElementById('backBtn2').addEventListener('click', function() {
+            showStep(2);
+        });
+    </script>
 </body>
 
 </html>
