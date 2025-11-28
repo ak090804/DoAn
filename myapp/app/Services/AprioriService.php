@@ -32,7 +32,7 @@ class AprioriService
         // 3) Lấy các product_id gợi ý từ Apriori
         $rows = DB::table('apriori_recommendations')
             ->where('product_id', $productId)
-            ->orderByDesc('score')
+            ->orderByDesc('confidence')
             ->limit($limit)
             ->get();
 
