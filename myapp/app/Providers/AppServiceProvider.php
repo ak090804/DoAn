@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot() : void
+    public function boot(): void
     {
         // Set pagination view to Bootstrap 5
         Paginator::useBootstrap(5);
@@ -36,5 +37,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->terminating(function () {
             Schema::enableForeignKeyConstraints();
         });
+        if (str_contains(config('app.url'), 'https://')) {
+            URL::forceScheme('https');
+        }
     }
 }

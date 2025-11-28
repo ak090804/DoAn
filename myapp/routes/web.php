@@ -91,6 +91,33 @@ Route::get('/account/orders/{id}', [ClientOrderController::class, 'show'])->name
 Route::post('/account/orders/{id}/update-status', [ClientOrderController::class, 'updateStatus'])->name('client.orders.updateStatus');
 
 
+use App\Http\Controllers\Client\PaymentController;
 
+// Route xử lý trả về từ PayOS (User nhìn thấy)
+Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
+
+// Route Webhook (PayOS gọi ngầm - Cần tắt CSRF cho route này)
+Route::post('/payment/webhook', [PaymentController::class, 'webhook'])->name('payment.webhook');
+
+// PayOS QR routes
+use App\Http\Controllers\Client\PayosController;
+Route::get('/payos/qr/{savedCart}', [PayosController::class, 'showQr'])->name('payos.qr');
+Route::get('/payos/status/{paymentRequestId}', [PayosController::class, 'status'])->name('payos.status');
+Route::post('/payos/webhook', [PayosController::class, 'webhook'])->name('payos.webhook');
+
+// Temporary debug webhook endpoint to capture any incoming PayOS webhook payloads
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
+Route::post('/payos/debug-webhook', function (Request $request) {
+    try {
+        $payload = $request->all();
+        Log::debug('PayOS Debug Webhook received', $payload);
+    } catch (\Throwable $e) {
+        Log::error('PayOS Debug Webhook logging failed: ' . $e->getMessage());
+    }
+    return response()->json(['ok' => true]);
+});
 
 

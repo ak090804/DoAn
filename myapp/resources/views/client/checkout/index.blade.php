@@ -136,7 +136,32 @@
                                         class="float-end">{{ number_format($total, 0, ',', '.') }}₫</span>
                                 </div>
                             </div>
+                            <!-- Thêm đoạn này vào trong thẻ <form id="checkoutForm">, vị trí trước nút Submit -->
 
+                            <div class="mb-4">
+                                <h5 class="mb-3">Phương thức thanh toán</h5>
+                                <div class="list-group">
+                                    <!-- Thanh toán khi nhận hàng -->
+                                    <label class="list-group-item d-flex gap-3 align-items-center">
+                                        <input class="form-check-input flex-shrink-0" type="radio" name="payment_method"
+                                            value="cod" checked>
+                                        <span>
+                                            <i class="fas fa-truck text-primary me-2"></i>
+                                            Thanh toán khi nhận hàng (COD)
+                                        </span>
+                                    </label>
+
+                                    <!-- Thanh toán PayOS -->
+                                    <label class="list-group-item d-flex gap-3 align-items-center">
+                                        <input class="form-check-input flex-shrink-0" type="radio" name="payment_method"
+                                            value="payos">
+                                        <span>
+                                            <i class="fas fa-qrcode text-success me-2"></i>
+                                            Chuyển khoản ngân hàng (QR Code)
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
                             <!-- Nút hành động -->
                             <button type="submit" class="btn btn-success btn-lg w-100 mb-2">
                                 <i class="fas fa-check"></i> Xác nhận đơn hàng
@@ -169,6 +194,19 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
+                        // If server returned saved_cart_id or QR, redirect to QR display page
+                        if (data.saved_cart_id || data.qr_image || data.qr_text) {
+                            showNotification('Chuyển tới trang thanh toán...', 'info');
+                            setTimeout(() => {
+                                if (data.saved_cart_id) {
+                                    window.location.href = '/payos/qr/' + data.saved_cart_id;
+                                } else if (data.redirect) {
+                                    window.location.href = data.redirect;
+                                }
+                            }, 800);
+                            return;
+                        }
+
                         showNotification('Đơn hàng được tạo thành công!', 'success');
                         setTimeout(() => {
                             window.location.href = data.redirect;
@@ -278,9 +316,9 @@
             alertDiv.style.zIndex = '9999';
             alertDiv.style.minWidth = '300px';
             alertDiv.innerHTML = `
-                                                ${message}
-                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                            `;
+                                                            ${message}
+                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                        `;
 
             const container = document.querySelector('body');
             container.insertBefore(alertDiv, container.firstChild);
