@@ -88,6 +88,67 @@
             </div>
 
 
+            @if($recommendedProducts->count() > 0)
+                <div class="mt-5">
+                    <h5 class="fw-bold mb-4 text-start">Sản phẩm gợi ý:</h5>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 col-lg-9">
+                        @foreach($recommendedProducts as $variant)
+                            <div class="col">
+                                <div class="product-item">
+                                    {{-- hình ảnh --}}
+                                    <figure>
+                                        <a href="{{ route('client.productDetail', ['id' => $variant->id]) }}" title="Product Title">
+                                            @if($variant->image)
+                                                <img src="{{ asset('storage/products/' . $variant->image) }}" class="tab-image">
+                                            @else
+                                                <img src="{{ asset('images/no-image.jpg')}}" class="tab-image">
+                                            @endif
+                                        </a>
+                                    </figure>
+                                    {{-- tên sp --}}
+                                    <h3 class="card-title mb-1">
+                                        <a href="{{ route('client.productDetail', ['id' => $variant->id]) }}"
+                                            class="product-title text-dark text-decoration-none">
+                                            {{ $variant->product->name }} {{ $variant->brand }}
+                                        </a>
+                                    </h3>
+                                    <span class="qty">{{ $variant->attribute }}</span>
+                                    {{-- giá --}}
+                                    <span class="price">{{ number_format($variant->price) }}đ</span>
+                                    {{-- số lượng và thêm vào giỏ hàng --}}
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="input-group product-qty">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="quantity-left-minus btn btn-danger btn-number"
+                                                    data-type="minus">
+                                                    <svg width="16" height="16">
+                                                        <use xlink:href="#minus"></use>
+                                                    </svg>
+                                                </button>
+                                            </span>
+                                            <input type="text" id="quantity" name="quantity" class="form-control input-number"
+                                                value="1">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="quantity-right-plus btn btn-success btn-number"
+                                                    data-type="plus">
+                                                    <svg width="16" height="16">
+                                                        <use xlink:href="#plus"></use>
+                                                    </svg>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+
+
+            <!-- Các lựa chọn khác -->
             @php
                 $otherVariants = $productVariant->product->productVariants->where('id', '!=', $productVariant->id);
             @endphp

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\ProductVariantService;
+use App\Services\AprioriService;
 use App\Models\Category;
 use App\Models\Product;
 
@@ -44,6 +45,9 @@ class ClientProductController extends Controller
             abort(404, 'Sản phẩm không tồn tại');
         }
 
-        return view('client.productDetail', compact('productVariant'));
+        $recommendedProducts = (new AprioriService())->recommendByVariant($id, 10);
+        $productVariant->recommendedProducts = $recommendedProducts;
+
+        return view('client.productDetail', compact('productVariant', 'recommendedProducts'));
     }
 }

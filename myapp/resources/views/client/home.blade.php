@@ -118,34 +118,40 @@
       <div class="swiper brand-carousel">
         <div class="swiper-wrapper">
           @foreach ($newestProducts as $newestProduct)
-            <div class="swiper-slide">
-              <div class="card mb-3 p-3 rounded-4 shadow border-0">
-                <div class="row g-0">
-                  {{-- Ảnh sản phẩm --}}
-                  <div class="col-md-4">
-                    <a href="{{ route('client.productDetail', ['id' => $newestProduct->id]) }}">
-                      @if($newestProduct->image)
-                        <img src="{{ asset('storage/products/' . $newestProduct->image) }}" class="img-fluid rounded">
-                      @else
-                        <img src="images/no-image.jpg" class="img-fluid rounded">
-                      @endif
-                    </a>
-                  </div>
-
-                  {{-- Thông tin sản phẩm --}}
-                  <div class="col-md-8">
-                    <div class="card-body py-0">
-                      <p class="text-muted mb-0">
-                        <a href="{{ route('client.productDetail', ['id' => $newestProduct->id]) }}">
-                          {{ $newestProduct->product->name }} {{ $newestProduct->brand }}
-                        </a>
-                      </p>
-                      <h5>
-                        {{ $newestProduct->description }}
-                      </h5>
-                    </div>
-                  </div>
+            <div class="product-item swiper-slide">
+              <a href="#" class="btn-wishlist"><svg width="24" height="24">
+                  <use xlink:href="#heart"></use>
+                </svg></a>
+              <figure>
+                <a href="{{ route('client.productDetail', ['id' => $newestProduct->id]) }}" title="Product Title">
+                  @if($newestProduct->image)
+                    <img src="{{ asset('storage/products/' . $newestProduct->image) }}" class="tab-image">
+                  @else
+                    <img src="images/no-image.jpg" class="tab-image">
+                  @endif
+                </a>
+              </figure>
+              <h3>{{ $newestProduct->product->name ?? 'Product' }} {{ $newestProduct->brand ?? '' }}</h3>
+              <span class="qty">{{ $newestProduct->quantity ?? '1' }} Unit</span>
+              <span class="price">{{ isset($newestProduct->price) ? number_format($newestProduct->price) . 'đ' : '' }}</span>
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="input-group product-qty">
+                  <span class="input-group-btn">
+                    <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus"><svg
+                        width="16" height="16">
+                        <use xlink:href="#minus"></use>
+                      </svg></button>
+                  </span>
+                  <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
+                  <span class="input-group-btn">
+                    <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus"><svg
+                        width="16" height="16">
+                        <use xlink:href="#plus"></use>
+                      </svg></button>
+                  </span>
                 </div>
+                <a href="#" class="nav-link"
+                  onclick="event.preventDefault(); var qtyInput=this.closest('.product-item').querySelector('input[name=quantity]'); var qty=(qtyInput?qtyInput.value:1); addToCart({{ $newestProduct->id }}, qty); return false;">Add to Cart <iconify-icon icon="uil:shopping-cart"></iconify-icon></a>
               </div>
             </div>
           @endforeach

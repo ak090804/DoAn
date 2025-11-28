@@ -129,7 +129,7 @@ class ProductVariantService
     //lấy 5 sp mới nhất
     public function getNewestProducts(int $limit = 5)
     {
-        return ProductVariant::orderByDesc('created_at')
+        return ProductVariant::orderByDesc('id')
             ->limit($limit)
             ->get();
     }
