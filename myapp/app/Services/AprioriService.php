@@ -15,7 +15,7 @@ class AprioriService
      * @param int $limit
      * @return \Illuminate\Support\Collection  ProductVariants gợi ý
      */
-    public function recommendByVariant(int $variantId, int $limit = 10)
+    public function recommendByVariant(int $variantId, int $limit = 3)
     {
         // 1) Lấy product_id từ variant_id
         $variant = ProductVariant::find($variantId);

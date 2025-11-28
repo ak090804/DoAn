@@ -88,9 +88,9 @@
             </div>
 
 
-            @if($recommendedProducts->count() > 0)
-                <div class="mt-5">
-                    <h5 class="fw-bold mb-4 text-start">Sản phẩm gợi ý:</h5>
+            <div class="mt-5">
+                <h5 class="fw-bold mb-4 text-start">Sản phẩm gợi ý:</h5>
+                @if($recommendedProducts->count() > 0)
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 col-lg-9">
                         @foreach($recommendedProducts as $variant)
                             <div class="col">
@@ -143,8 +143,10 @@
                             </div>
                         @endforeach
                     </div>
-                </div>
-            @endif
+                @else
+                    <p>Không có sản phẩm gợi ý nào.</p>
+                @endif
+            </div>
 
 
 

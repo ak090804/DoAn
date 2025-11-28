@@ -1,23 +1,24 @@
+# scripts/apriori_build.py
 import pandas as pd
 import json
 from apyori import apriori
 import argparse
+from collections import defaultdict
 
-# ======= ARG PARSER =======
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="Build Apriori 1→1 rules with top N consequents per antecedent")
 parser.add_argument("input", help="CSV file of transactions")
 parser.add_argument("output", help="JSON output file")
 parser.add_argument("--min_support", type=float, default=0.005)
 parser.add_argument("--min_confidence", type=float, default=0.2)
-parser.add_argument("--min_lift", type=float, default=3)
-parser.add_argument("--top", type=int, default=0)
+parser.add_argument("--min_lift", type=float, default=3.0)
+parser.add_argument("--top", type=int, default=3, help="Max consequents per antecedent (0 = no limit)")
 args = parser.parse_args()
 
-# ======= LOAD TRANSACTIONS =======
+# Load data
 df = pd.read_csv(args.input, header=None)
-transactions = df.apply(lambda r: r.dropna().astype(str).tolist(), axis=1).tolist()
+transactions = df.apply(lambda row: [str(item).strip() for item in row.dropna() if str(item).strip()], axis=1).tolist()
 
-# ======= RUN APRIORI =======
+# Run Apriori
 rules_gen = apriori(
     transactions,
     min_support=args.min_support,
@@ -26,40 +27,49 @@ rules_gen = apriori(
     min_length=2
 )
 
-results_list = list(rules_gen)
-rules = []
-seen = set()
+# Group by antecedent
+antecedent_dict = defaultdict(list)
+seen_pairs = set()
 
-# ======= CHUYỂN LUẬT THÀNH A→B, A→C =======
-for rule in results_list:
+for rule in rules_gen:
+    support = rule.support
     for stat in rule.ordered_statistics:
-        antecedent = list(stat.items_base)
-        consequent = list(stat.items_add)
-        if not antecedent or not consequent:
+        antecedents = [str(a) for a in stat.items_base]
+        consequents = [str(c) for c in stat.items_add]
+        
+        if not antecedents or not consequents:
             continue
+            
+        confidence = stat.confidence
+        lift = stat.lift
 
-        # Tách từng B trong C
-        for B in consequent:
-            pair = (tuple(antecedent), B)  # lưu tuple để kiểm tra trùng
-            if pair in seen:
-                continue
-            seen.add(pair)
+        for ante in antecedents:
+            for cons in consequents:
+                pair = (ante, cons)
+                if pair in seen_pairs:
+                    continue
+                seen_pairs.add(pair)
 
-            rules.append({
-                "antecedent": list(antecedent) if len(antecedent) > 1 else antecedent[0],
-                "consequent": B,
-                "support": rule.support,
-                "confidence": stat.confidence,
-                "lift": stat.lift
-            })
+                antecedent_dict[ante].append({
+                    "antecedent": ante,
+                    "consequent": cons,
+                    "support": support,
+                    "confidence": confidence,
+                    "lift": lift
+                })
 
-# ======= SORT VÀ APPLY TOP =======
-rules.sort(key=lambda x: x["confidence"], reverse=True)
-if args.top > 0:
-    rules = rules[:args.top]
+# Get top N per antecedent
+final_rules = []
+top_n = args.top if args.top > 0 else None  # None = không giới hạn
 
-# ======= SAVE JSON =======
-with open(args.output, "w", encoding="utf8") as f:
-    json.dump(rules, f, indent=2, ensure_ascii=False)
+for ante, items in antecedent_dict.items():
+    items.sort(key=lambda x: x["confidence"], reverse=True)
+    for item in items[:top_n]:
+        final_rules.append(item)
 
+# Sort tổng thể (tùy chọn)
+final_rules.sort(key=lambda x: x["confidence"], reverse=True)
 
+# Save JSON (danh sách phẳng - tương thích với Laravel)
+with open(args.output, "w", encoding="utf-8") as f:
+    json.dump(final_rules, f, indent=2, ensure_ascii=False)
