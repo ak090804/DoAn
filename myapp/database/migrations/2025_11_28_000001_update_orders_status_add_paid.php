@@ -13,17 +13,13 @@ return new class extends Migration {
      */
     public function up()
     {
-        // Safer approach:
-        // 1) Modify column to VARCHAR to avoid enum conversion errors when existing rows contain unexpected values
-        // 2) Normalize any unexpected status values to 'pending'
-        // 3) Convert column to ENUM including 'paid'
+        // Safer approach to add 'paid' to the enum:
+        // 1) Convert to VARCHAR to avoid ALTER ENUM truncation errors
+        // 2) Normalize unexpected values to 'pending'
+        // 3) Convert to ENUM including 'paid'
 
         DB::statement("ALTER TABLE `orders` MODIFY `status` VARCHAR(50) NOT NULL DEFAULT 'pending'");
-
-        // Normalize: any status not in allowed set -> set to 'pending'
         DB::statement("UPDATE `orders` SET `status` = 'pending' WHERE `status` NOT IN ('pending','approved','cancelled','paid') OR `status` IS NULL");
-
-        // Now safely change to ENUM including 'paid'
         DB::statement("ALTER TABLE `orders` MODIFY `status` ENUM('pending','approved','cancelled','paid') NOT NULL DEFAULT 'pending'");
     }
 
@@ -34,7 +30,9 @@ return new class extends Migration {
      */
     public function down()
     {
-        // Revert to previous enum set
-        DB::statement("ALTER TABLE `orders` MODIFY `status` ENUM('pending','approved','cancelled') NOT NULL DEFAULT 'pending'");
+        // Keep rollback safe by converting to VARCHAR and normalizing values.
+        // We avoid converting back to a smaller ENUM to prevent truncation warnings.
+        DB::statement("ALTER TABLE `orders` MODIFY `status` VARCHAR(50) NOT NULL DEFAULT 'pending'");
+        DB::statement("UPDATE `orders` SET `status` = 'pending' WHERE `status` NOT IN ('pending','approved','cancelled') OR `status` IS NULL");
     }
 };

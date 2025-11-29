@@ -25,7 +25,12 @@ return new class extends Migration {
      */
     public function down()
     {
-        // Revert to original set (keep 'approved' and 'cancelled' and 'pending')
+        // Safely revert to original set without causing truncation:
+        // 1) Convert to VARCHAR
+        // 2) Normalize unexpected values to 'pending'
+        // 3) Convert back to ENUM
+        DB::statement("ALTER TABLE `orders` MODIFY `status` VARCHAR(50) NOT NULL DEFAULT 'pending';");
+        DB::statement("UPDATE `orders` SET `status` = 'pending' WHERE `status` NOT IN ('pending','approved','cancelled') OR `status` IS NULL");
         DB::statement("ALTER TABLE `orders` MODIFY `status` ENUM('pending','approved','cancelled') NOT NULL DEFAULT 'pending';");
     }
 };
